@@ -2,12 +2,11 @@ package com.project.sportsManagement.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.servlet.http.Part;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 
 @Entity
 @Table(name = "student")
@@ -52,7 +51,7 @@ public class Student implements UserDetails {
     private String lastName;
 
     @Column(name = "roll_no")
-    private int rollNo;
+    private Long rollNo;
 
     @Column(name = "email")
     private String email;
@@ -61,13 +60,17 @@ public class Student implements UserDetails {
     @JsonIgnore
     private String password;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "institution_code",referencedColumnName = "institution_code")
     private Institution institution;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id",referencedColumnName = "role_id")
     private Role authority;
+
+
+    @OneToMany(mappedBy = "studentId",cascade = CascadeType.ALL)
+    private Set<Participation> participations;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -82,8 +85,7 @@ public class Student implements UserDetails {
         super();
     }
 
-    public Student(int studentId, String firstName, String lastName, int rollNo, String email, String password, Institution institution, Role authority, Date createdAt, Date updatedAt) {
-        this.studentId = studentId;
+    public Student(String firstName, String lastName, Long rollNo, String email, String password, Institution institution, Role authority) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.rollNo = rollNo;
@@ -91,11 +93,12 @@ public class Student implements UserDetails {
         this.password = password;
         this.institution = institution;
         this.authority = authority;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
+        this.participations = new HashSet<>();
     }
 
-    public int getStudentId() {
+    public long getStudentId() {
         return studentId;
     }
 
@@ -115,11 +118,11 @@ public class Student implements UserDetails {
         this.lastName = lastName;
     }
 
-    public int getRollNo() {
+    public Long getRollNo() {
         return rollNo;
     }
 
-    public void setRollNo(int rollNo) {
+    public void setRollNo(Long rollNo) {
         this.rollNo = rollNo;
     }
 
@@ -153,6 +156,10 @@ public class Student implements UserDetails {
 
     public void setAuthority(Role authority) {
         this.authority = authority;
+    }
+
+    public Set<Participation> getParticipation() {
+        return participations;
     }
 
     public Date getCreatedAt() {

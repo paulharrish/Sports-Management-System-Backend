@@ -44,15 +44,15 @@ public class Institution implements UserDetails {
     private Date updatedAt;
 
 
-    public Institution(int institutionCode, String institutionName, String email, String password, Role authority, Location address, Date createdAt, Date updatedAt) {
+    public Institution(int institutionCode, String institutionName, String email, String password, Role authority, Location address) {
         this.institutionCode = institutionCode;
         this.institutionName = institutionName;
         this.email = email;
         this.password = password;
         this.authority = authority;
         this.address = address;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
     }
 
 

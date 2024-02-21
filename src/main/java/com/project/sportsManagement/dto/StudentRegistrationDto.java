@@ -3,18 +3,19 @@ package com.project.sportsManagement.dto;
 import com.project.sportsManagement.entity.Institution;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 public class StudentRegistrationDto {
     @NotEmpty(message = "firstName cannot Be Empty")
     private String firstName;
     @NotEmpty(message = "lastName cannot be Empty")
     private String lastName;
-    @NotEmpty(message = "Roll number cannot be empty")
+    @NotNull(message = "Roll number cannot be empty")
     private Long rollNo;
     @NotEmpty(message = "Email Cannot be Empty")
     @Email(message = "Invalid Email")
     private String email;
-    @NotEmpty(message = "Institution code cannot be empty")
+    @NotNull(message = "Institution code cannot be empty")
     private int institutionCode;
     @NotEmpty(message = "Password Cannot be Empty")
     private String password;

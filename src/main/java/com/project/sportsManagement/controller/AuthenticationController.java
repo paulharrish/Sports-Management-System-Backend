@@ -29,7 +29,7 @@ public class AuthenticationController {
     private PasswordEncoder passwordEncoder;
 
 
-    @PostMapping("/auth/register/user")
+    @PostMapping("/auth/register/student")
     public ResponseEntity<Student> registerUser(@RequestBody @Valid StudentRegistrationDto studentRegistrationDto){
         Student student = authenticationService.registerStudent(studentRegistrationDto);
         return new ResponseEntity<>(student, HttpStatus.CREATED);

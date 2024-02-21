@@ -2,7 +2,6 @@ package com.project.sportsManagement.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.servlet.http.Part;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -70,7 +69,7 @@ public class Student implements UserDetails {
 
 
     @OneToMany(mappedBy = "studentId",cascade = CascadeType.ALL)
-    private Set<Participation> participations;
+    private Set<Participation> participation;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -95,7 +94,7 @@ public class Student implements UserDetails {
         this.authority = authority;
         this.createdAt = new Date();
         this.updatedAt = new Date();
-        this.participations = new HashSet<>();
+        this.participation = new HashSet<>();
     }
 
     public long getStudentId() {
@@ -159,7 +158,7 @@ public class Student implements UserDetails {
     }
 
     public Set<Participation> getParticipation() {
-        return participations;
+        return participation;
     }
 
     public Date getCreatedAt() {

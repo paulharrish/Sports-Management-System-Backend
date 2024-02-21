@@ -13,6 +13,10 @@ public class Role implements GrantedAuthority {
     private int roleId;
     @Column(name = "authority")
     private String authority;
+
+    public Role() {
+    }
+
     @Override
     public String getAuthority() {
         return authority;

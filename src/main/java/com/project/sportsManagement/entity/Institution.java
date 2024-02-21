@@ -43,6 +43,8 @@ public class Institution implements UserDetails {
     @Column(name = "updated_at", nullable = false)
     private Date updatedAt;
 
+    public Institution() {
+    }
 
     public Institution(int institutionCode, String institutionName, String email, String password, Role authority, Location address) {
         this.institutionCode = institutionCode;

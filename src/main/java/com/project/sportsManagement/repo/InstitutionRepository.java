@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface InstitutionRepository extends JpaRepository<Institution,Integer> {
 
     Optional<Institution> findByEmail(String email);
+
+    Optional<Institution> findByInstitutionCode(int code);
 }

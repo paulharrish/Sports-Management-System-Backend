@@ -29,6 +29,6 @@ public class UserService implements UserDetailsService {
         if (institution.isPresent()){
             return institution.get();
         }
-        throw new UsernameNotFoundException("Username is invalid");
+        throw new UsernameNotFoundException("No account is associated with this email");
     }
 }

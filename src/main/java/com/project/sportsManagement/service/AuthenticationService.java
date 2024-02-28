@@ -1,18 +1,29 @@
 package com.project.sportsManagement.service;
 
+import com.project.sportsManagement.dto.InstitutionRegistrationDto;
+import com.project.sportsManagement.dto.LoginDto;
+import com.project.sportsManagement.dto.LoginResponse;
 import com.project.sportsManagement.dto.StudentRegistrationDto;
 import com.project.sportsManagement.entity.Institution;
+import com.project.sportsManagement.entity.Location;
 import com.project.sportsManagement.entity.Role;
 import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.exception.InstitutionNotFoundException;
+import com.project.sportsManagement.exception.UserNotFoundException;
 import com.project.sportsManagement.repo.InstitutionRepository;
 import com.project.sportsManagement.repo.RoleRepository;
 import com.project.sportsManagement.repo.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -44,4 +55,39 @@ public class AuthenticationService {
         Institution institutionCode = institutionRepository.findByInstitutionCode(studentRegistrationDto.getInstitutionCode()).orElseThrow(() -> new InstitutionNotFoundException("Institution not found with the given institution code"));
         return studentRepository.saveAndFlush(new Student(studentRegistrationDto.getFirstName(),studentRegistrationDto.getLastName(),studentRegistrationDto.getRollNo(),studentRegistrationDto.getEmail(),encodedPassword,institutionCode,studentAuthority));
     }
+
+
+    public Institution registerInstitution(InstitutionRegistrationDto institutionRegistrationDto){
+
+        Role institutionAuthority = roleRepository.findByAuthority("INSTITUTION").get();
+        String encodedPassword = passwordEncoder.encode(institutionRegistrationDto.getPassword());
+        Location location = new Location(institutionRegistrationDto.getInstitutionAddress(), institutionRegistrationDto.getDistrict(), institutionRegistrationDto.getState());
+        return  institutionRepository.saveAndFlush(new Institution(institutionRegistrationDto.getInstitutionCode(),institutionRegistrationDto.getInstitutionName(),institutionRegistrationDto.getEmail(),encodedPassword,institutionAuthority,location));
+
+    }
+
+
+    public LoginResponse login(LoginDto loginDto) {
+        try {
+            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
+            String token = tokenService.generateJwt(auth);
+
+            Optional<Student> studentOptional = studentRepository.findByEmail(loginDto.getEmail());
+            if (studentOptional.isPresent()) {
+                return new LoginResponse(studentOptional.get(), token);
+            }
+
+
+            Optional<Institution> institutionOptional = institutionRepository.findByEmail(loginDto.getEmail());
+            if (institutionOptional.isPresent()) {
+                return new LoginResponse(institutionOptional.get(), token);
+            }
+
+            throw new UserNotFoundException("User not found for the given email");
+
+        } catch (AuthenticationException e) {
+            throw new UserNotFoundException("Invalid Credentials");
+        }
+    }
+
 }

@@ -3,6 +3,7 @@ package com.project.sportsManagement.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
@@ -12,7 +13,7 @@ import java.util.*;
 public class Student implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new Role("STUDENT"));
+        return Collections.singleton(new SimpleGrantedAuthority(authority.getAuthority()));
     }
 
     @Override
@@ -66,7 +67,6 @@ public class Student implements UserDetails {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id",referencedColumnName = "role_id")
     private Role authority;
-
 
     @OneToMany(mappedBy = "studentId",cascade = CascadeType.ALL)
     private Set<Participation> participation;
@@ -149,8 +149,8 @@ public class Student implements UserDetails {
         this.institution = institution;
     }
 
-    public Role getAuthority() {
-        return authority;
+    public String getAuthority() {
+        return authority.getAuthority();
     }
 
     public void setAuthority(Role authority) {

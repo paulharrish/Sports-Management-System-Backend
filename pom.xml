@@ -55,6 +55,17 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-spring-boot-starter</artifactId>
+			<version>24.3.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-spring</artifactId>
+			<version>24.3.5</version>
+		</dependency>
+
 
 	</dependencies>
 
@@ -64,7 +75,17 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<executable>open</executable>
+					<arguments>
+						<argument>http://localhost:8080/login</argument>
+					</arguments>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-
 </project>

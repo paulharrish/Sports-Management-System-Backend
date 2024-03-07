@@ -2,6 +2,7 @@ package com.project.sportsManagement.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.annotations.NaturalId;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,27 +19,28 @@ public class Student implements UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        return this.email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true
+                ;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     @Id
@@ -54,6 +56,7 @@ public class Student implements UserDetails {
     private Long rollNo;
 
     @Column(name = "email")
+    @NaturalId
     private String email;
 
     @Column(name = "password")
@@ -68,7 +71,7 @@ public class Student implements UserDetails {
     @JoinColumn(name = "role_id",referencedColumnName = "role_id")
     private Role authority;
 
-    @OneToMany(mappedBy = "studentId",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "studentId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<Participation> participation;
 
     @Temporal(TemporalType.TIMESTAMP)

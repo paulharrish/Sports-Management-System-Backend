@@ -4,9 +4,9 @@ import com.project.sportsManagement.entity.Institution;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public class StudentRegistrationDto {
-    @NotEmpty(message = "firstName cannot Be Empty")
     private String firstName;
     @NotEmpty(message = "lastName cannot be Empty")
     private String lastName;

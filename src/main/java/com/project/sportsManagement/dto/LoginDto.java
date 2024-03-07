@@ -1,8 +1,11 @@
 package com.project.sportsManagement.dto;
 
-public class LoginDto {
+import jakarta.validation.constraints.NotEmpty;
 
+public class LoginDto {
+    @NotEmpty(message = "Email cannot be empty")
     private  String email;
+    @NotEmpty(message = "password cannot be empty")
     private String password;
 
 

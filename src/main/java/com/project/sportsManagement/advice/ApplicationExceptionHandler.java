@@ -1,6 +1,8 @@
 package com.project.sportsManagement.advice;
 
 import com.project.sportsManagement.exception.UnauthorizedException;
+import com.project.sportsManagement.exception.UserAlreadyExistsException;
+import com.project.sportsManagement.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -33,4 +35,24 @@ public class ApplicationExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(),HttpStatus.UNAUTHORIZED.getReasonPhrase(),errorMessage);
         return new ResponseEntity<>(errorResponse,HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleExistingUser(UserAlreadyExistsException exception) {
+        ArrayList<String> errorMessage = new ArrayList<>();
+        errorMessage.add(exception.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(),HttpStatus.BAD_REQUEST.getReasonPhrase(),errorMessage);
+        return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentials(UserNotFoundException exception) {
+        ArrayList<String> errorMessage = new ArrayList<>();
+        errorMessage.add(exception.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNAUTHORIZED.value(),HttpStatus.UNAUTHORIZED.getReasonPhrase(),errorMessage);
+        return new ResponseEntity<>(errorResponse,HttpStatus.UNAUTHORIZED);
+    }
+
+
 }

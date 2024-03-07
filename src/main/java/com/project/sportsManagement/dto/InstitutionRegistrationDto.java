@@ -3,11 +3,11 @@ package com.project.sportsManagement.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public class InstitutionRegistrationDto {
     @NotEmpty(message = "Institution code cannot be empty")
     private int institutionCode;
-    @NotEmpty(message = "Institution Name cannot be empty")
     private String institutionName;
     @NotEmpty(message = "Email cannot be empty")
     @Email

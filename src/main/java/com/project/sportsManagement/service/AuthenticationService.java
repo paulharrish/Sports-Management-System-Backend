@@ -9,6 +9,7 @@ import com.project.sportsManagement.entity.Location;
 import com.project.sportsManagement.entity.Role;
 import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.exception.InstitutionNotFoundException;
+import com.project.sportsManagement.exception.UserAlreadyExistsException;
 import com.project.sportsManagement.exception.UserNotFoundException;
 import com.project.sportsManagement.repo.InstitutionRepository;
 import com.project.sportsManagement.repo.RoleRepository;
@@ -18,6 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,8 +49,20 @@ public class AuthenticationService {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private UserService userService;
+
 
     public Student registerStudent(StudentRegistrationDto studentRegistrationDto){
+        Optional<Student> studentOptional = studentRepository.findByEmail(studentRegistrationDto.getEmail());
+        if (studentOptional.isPresent()){
+            throw new UserAlreadyExistsException("User already Exists with this Email Id");
+        }
+        Optional<Student> studentOptional1 = studentRepository.findByRollNo(studentRegistrationDto.getRollNo());
+        if (studentOptional1.isPresent()){
+            throw new UserAlreadyExistsException("User already Exists with this Roll no. ");
+        }
+
 
         Role studentAuthority = roleRepository.findByAuthority("STUDENT").get();
         String encodedPassword = passwordEncoder.encode(studentRegistrationDto.getPassword());
@@ -58,6 +72,16 @@ public class AuthenticationService {
 
 
     public Institution registerInstitution(InstitutionRegistrationDto institutionRegistrationDto){
+
+        Optional<Institution> institutionOptional = institutionRepository.findByEmail(institutionRegistrationDto.getEmail());
+        if (institutionOptional.isPresent()){
+            throw new UserAlreadyExistsException("Institution Already exists with this email");
+        }
+
+        Optional<Institution> institutionOptional2 = institutionRepository.findByInstitutionCode(institutionRegistrationDto.getInstitutionCode());
+        if (institutionOptional2.isPresent()){
+            throw new UserAlreadyExistsException("Institution Already exists with this Institution Code");
+        }
 
         Role institutionAuthority = roleRepository.findByAuthority("INSTITUTION").get();
         String encodedPassword = passwordEncoder.encode(institutionRegistrationDto.getPassword());
@@ -86,7 +110,8 @@ public class AuthenticationService {
             throw new UserNotFoundException("User not found for the given email");
 
         } catch (AuthenticationException e) {
-            throw new UserNotFoundException("Invalid Credentials");
+            String message = e.getLocalizedMessage();
+            throw new UserNotFoundException(message);
         }
     }
 

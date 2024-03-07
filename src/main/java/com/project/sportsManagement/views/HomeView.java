@@ -11,17 +11,25 @@ import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.spring.security.AuthenticationContext;
+import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Route("/home")
+@Route("")
+@PermitAll
 public class HomeView extends AppLayout {
 
-    public HomeView() {
+
+    private AuthenticationContext authenticationContext;
+    @Autowired
+    public HomeView(AuthenticationContext authenticationContext) {
+        this.authenticationContext = authenticationContext;
         DrawerToggle toggle  = new DrawerToggle();
 
         H1 title = new H1("Sports Management System");
         title.getStyle().set("font-size", "var(--lumo-font-size-l)").set("margin", "0");
         VaadinSession currentSession = VaadinSession.getCurrent();
-        Span greetingText = getGreetingMessage(currentSession);
+        Span greetingText = new Span(authenticationContext.getPrincipalName().get());
         greetingText.getElement().getThemeList().add("badge contrast pill");
 
 

@@ -58,19 +58,7 @@ public class AppConfig extends VaadinWebSecurity {
         return new ProviderManager(daoAuthenticationProvider);
     }
 
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-//        return httpSecurity
-//                .csrf(csrf -> csrf.disable())
-//                .authorizeHttpRequests(auth -> {
-//                    auth.requestMatchers("/login").permitAll();
-//                    auth.requestMatchers("/home").authenticated();
-//                    auth.requestMatchers("/**").permitAll();
-//                })
-//                .oauth2ResourceServer(configurer -> configurer.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter())))
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .build();
-//    }
+
 
 
     @Bean

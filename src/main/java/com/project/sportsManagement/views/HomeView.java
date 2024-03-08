@@ -9,27 +9,23 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.spring.security.AuthenticationContext;
 import jakarta.annotation.security.PermitAll;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Route("")
 @PermitAll
-public class HomeView extends AppLayout {
+public class HomeView extends AppLayout implements BeforeEnterObserver {
 
 
-    private AuthenticationContext authenticationContext;
-    @Autowired
-    public HomeView(AuthenticationContext authenticationContext) {
-        this.authenticationContext = authenticationContext;
+    public HomeView() {
         DrawerToggle toggle  = new DrawerToggle();
 
         H1 title = new H1("Sports Management System");
         title.getStyle().set("font-size", "var(--lumo-font-size-l)").set("margin", "0");
-        VaadinSession currentSession = VaadinSession.getCurrent();
-        Span greetingText = new Span(authenticationContext.getPrincipalName().get());
+        Span greetingText = getCurrentUserGreetingMessage();
         greetingText.getElement().getThemeList().add("badge contrast pill");
 
 
@@ -41,20 +37,25 @@ public class HomeView extends AppLayout {
 
     }
 
-    private Span getGreetingMessage(VaadinSession session) {
-        Span greetingText;
-        if (session.getAttribute("user") instanceof Student){
-            String name = ((Student) session.getAttribute("user")).getFirstName();
-            greetingText = new Span("Hii "+name);
+    private Span getCurrentUserGreetingMessage(){
+       Span greetingText;
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Student){
+            Student student = (Student)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            greetingText = new Span("Welcome, " + student.getFirstName());
             return greetingText;
         }
-        if (session.getAttribute("user") instanceof Institution){
-            String name = ((Institution)session.getAttribute("user")).getInstitutionName();
-            greetingText = new Span("Hii "+ name);
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Institution ) {
+            Institution institution = (Institution) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            greetingText = new Span("Welcome, "+ institution.getInstitutionName());
             return greetingText;
         }
-        return null;
+        else {
+            greetingText = new Span("Welcome Guest");
+            return greetingText;
+        }
     }
+
+
 
     private SideNav getSideNav() {
         SideNav nav = new SideNav();
@@ -63,5 +64,12 @@ public class HomeView extends AppLayout {
                 new SideNavItem("My events","/my-events",VaadinIcon.PLAY.create())
         );
         return nav;
+    }
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        if (SecurityContextHolder.getContext().getAuthentication() == null || !SecurityContextHolder.getContext().getAuthentication().isAuthenticated()){
+            event.rerouteTo("login");
+        }
     }
 }

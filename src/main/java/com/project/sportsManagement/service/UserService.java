@@ -5,7 +5,6 @@ import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.exception.UserNotFoundException;
 import com.project.sportsManagement.repo.InstitutionRepository;
 import com.project.sportsManagement.repo.StudentRepository;
-import org.apache.catalina.realm.AuthenticatedUserRealm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +24,8 @@ public class UserService implements UserDetailsService {
     private InstitutionRepository institutionRepository;
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        System.out.println("In the user service for authentication");
+
        Optional<Student> student = studentRepository.findByEmail(email);
         if (student.isPresent()) {
             return student.get();

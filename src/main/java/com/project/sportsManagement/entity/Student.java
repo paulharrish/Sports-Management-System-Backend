@@ -53,7 +53,7 @@ public class Student implements UserDetails {
     private String lastName;
 
     @Column(name = "roll_no")
-    private Long rollNo;
+    private String rollNo;
 
     @Column(name = "email")
     @NaturalId
@@ -87,7 +87,7 @@ public class Student implements UserDetails {
         super();
     }
 
-    public Student(String firstName, String lastName, Long rollNo, String email, String password, Institution institution, Role authority) {
+    public Student(String firstName, String lastName, String rollNo, String email, String password, Institution institution, Role authority) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.rollNo = rollNo;
@@ -120,11 +120,11 @@ public class Student implements UserDetails {
         this.lastName = lastName;
     }
 
-    public Long getRollNo() {
+    public String getRollNo() {
         return rollNo;
     }
 
-    public void setRollNo(Long rollNo) {
+    public void setRollNo(String rollNo) {
         this.rollNo = rollNo;
     }
 

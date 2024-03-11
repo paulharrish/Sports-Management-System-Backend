@@ -13,12 +13,20 @@ public class EventService {
     @Autowired
     private  EventRepository eventRepository;
 
-    public List<Event> getAllEvents(String filterText){
+    public List<Event> filterByName(String filterText){
         if (filterText == null || filterText.isEmpty()){
             return eventRepository.findAll();
         }else {
             return eventRepository.search(filterText);
         }
 
+    }
+
+    public List<Event> filterByCollege(String filterText){
+        if (filterText == null || filterText.isEmpty()){
+            return eventRepository.findAll();
+        }else {
+            return eventRepository.searchByCollege(filterText);
+        }
     }
 }

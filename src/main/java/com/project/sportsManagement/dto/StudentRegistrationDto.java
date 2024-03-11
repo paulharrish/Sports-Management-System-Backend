@@ -4,19 +4,18 @@ import com.project.sportsManagement.entity.Institution;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.security.core.userdetails.UserDetails;
 
 public class StudentRegistrationDto {
     private String firstName;
     @NotEmpty(message = "lastName cannot be Empty")
     private String lastName;
     @NotNull(message = "Roll number cannot be empty")
-    private Long rollNo;
+    private String rollNo;
     @NotEmpty(message = "Email Cannot be Empty")
     @Email(message = "Invalid Email")
     private String email;
     @NotNull(message = "Institution code cannot be empty")
-    private int institutionCode;
+    private Institution institution;
     @NotEmpty(message = "Password Cannot be Empty")
     private String password;
 
@@ -36,11 +35,11 @@ public class StudentRegistrationDto {
         this.lastName = lastName;
     }
 
-    public Long getRollNo() {
+    public String getRollNo() {
         return rollNo;
     }
 
-    public void setRollNo(Long rollNo) {
+    public void setRollNo(String rollNo) {
         this.rollNo = rollNo;
     }
 
@@ -52,12 +51,12 @@ public class StudentRegistrationDto {
         this.email = email;
     }
 
-    public int getInstitutionCode() {
-        return institutionCode;
+    public Institution getInstitution() {
+        return institution;
     }
 
-    public void setInstitutionCode(int institutionCode) {
-        this.institutionCode = institutionCode;
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
     }
 
     public String getPassword() {
@@ -73,12 +72,12 @@ public class StudentRegistrationDto {
         super();
     }
 
-    public StudentRegistrationDto(String firstName, String lastName, Long rollNo, String email, int institutionCode, String password) {
+    public StudentRegistrationDto(String firstName, String lastName, String rollNo,Institution institution, String email,String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.rollNo = rollNo;
         this.email = email;
-        this.institutionCode = institutionCode;
+        this.institution = institution;
         this.password = password;
     }
 }

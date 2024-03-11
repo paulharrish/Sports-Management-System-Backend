@@ -33,6 +33,8 @@ public class ListView extends VerticalLayout implements BeforeEnterObserver {
     TextField filterByName = new TextField();
     TextField filterByCollege = new TextField();
 
+    Span infoText =  new Span("Discover sports events hosted by different institutions. Click to view more details and expand your selection.");
+
     @Autowired
     EventService eventService;
 
@@ -44,28 +46,20 @@ public class ListView extends VerticalLayout implements BeforeEnterObserver {
         this.authenticationService = authenticationService;
         addClassName("list-view");
         setSizeFull();
+        infoText.addClassName("info-text");
+        infoText.getStyle().set("color","#185396");
         
         configureGrid();
         add(
-                getToolBar(),
+                getGreetingText(),
+                getInfoArea(),
                 eventGrid
         );
         
         updateList();
     }
 
-    private void updateList() {
-        eventGrid.setItems(eventService.getAllEvents(filterByName.getValue()));
-    }
-
-    private Component getToolBar() {
-        H2 greetingText = null;
-        if (authenticationService.getAuthenticatedUser() instanceof Student student){
-            greetingText = new H2("Welcome, " + student.getFirstName());
-        }
-        if (authenticationService.getAuthenticatedUser() instanceof Institution institution){
-            greetingText = new H2("Welcome, " + institution.getInstitutionName());
-        }
+    private Component getInfoArea() {
         filterByName.setPlaceholder("Filter by Event Name");
         filterByCollege.setPlaceholder("Filter By College");
         filterByName.getStyle().set("margin-left","auto");
@@ -74,9 +68,31 @@ public class ListView extends VerticalLayout implements BeforeEnterObserver {
         filterByName.setValueChangeMode(ValueChangeMode.EAGER);
         filterByCollege.setValueChangeMode(ValueChangeMode.EAGER);
         filterByName.addValueChangeListener(e -> updateList());
-        HorizontalLayout header = new HorizontalLayout(greetingText,filterByName);
+        filterByCollege.addValueChangeListener(e -> filterByCollege());
+        HorizontalLayout header = new HorizontalLayout(infoText,filterByName,filterByCollege);
         header.getStyle().set("width","100%");
+        header.setDefaultVerticalComponentAlignment(Alignment.END);
         return header;
+
+    }
+
+    private void updateList() {
+        eventGrid.setItems(eventService.filterByName(filterByName.getValue()));
+    }
+
+    private Component getGreetingText() {
+        H2 greetingText = null;
+        if (authenticationService.getAuthenticatedUser() instanceof Student student){
+            greetingText = new H2("Welcome, " + student.getFirstName() + ".");
+        }
+        if (authenticationService.getAuthenticatedUser() instanceof Institution institution){
+            greetingText = new H2("Welcome, " + institution.getInstitutionName() + ".");
+        }
+        return greetingText;
+    }
+
+    private void filterByCollege() {
+        eventGrid.setItems(eventService.filterByCollege(filterByCollege.getValue()));
     }
 
     private void configureGrid() {

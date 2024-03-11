@@ -5,6 +5,7 @@ import $cssFromFile_0 from 'Frontend/style.css?inline';
 
 injectGlobalCss($cssFromFile_0.toString(), 'CSSImport end', document);
 import '@vaadin/polymer-legacy-adapter/style-modules.js';
+import '@vaadin/form-layout/theme/lumo/vaadin-form-layout.js';
 import '@vaadin/vertical-layout/theme/lumo/vaadin-vertical-layout.js';
 import '@vaadin/app-layout/theme/lumo/vaadin-app-layout.js';
 import '@vaadin/common-frontend/ConnectionIndicator.js';
@@ -35,7 +36,6 @@ import 'Frontend/generated/jar-resources/vaadin-time-picker/timepickerConnector.
 import '@vaadin/dialog/theme/lumo/vaadin-dialog.js';
 import 'Frontend/generated/jar-resources/dndConnector.js';
 import '@vaadin/field-highlighter/theme/lumo/vaadin-field-highlighter.js';
-import '@vaadin/form-layout/theme/lumo/vaadin-form-layout.js';
 import '@vaadin/form-layout/theme/lumo/vaadin-form-item.js';
 import '@vaadin/grid/theme/lumo/vaadin-grid-column-group.js';
 import '@vaadin/grid/theme/lumo/vaadin-grid.js';

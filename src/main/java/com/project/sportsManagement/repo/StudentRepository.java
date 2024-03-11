@@ -1,6 +1,5 @@
 package com.project.sportsManagement.repo;
 
-import com.project.sportsManagement.entity.Location;
 import com.project.sportsManagement.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,6 +10,7 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
 
     Student findByStudentId(int StudentId);
 
-    Optional<Student> findByRollNo(Long rollNo);
+    Optional<Student> findByRollNo(String rollNo);
+
 
 }

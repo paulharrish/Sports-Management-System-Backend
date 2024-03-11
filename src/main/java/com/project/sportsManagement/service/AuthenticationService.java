@@ -3,12 +3,10 @@ package com.project.sportsManagement.service;
 import com.project.sportsManagement.dto.InstitutionRegistrationDto;
 import com.project.sportsManagement.dto.LoginDto;
 import com.project.sportsManagement.dto.LoginResponse;
-import com.project.sportsManagement.dto.StudentRegistrationDto;
 import com.project.sportsManagement.entity.Institution;
 import com.project.sportsManagement.entity.Location;
 import com.project.sportsManagement.entity.Role;
 import com.project.sportsManagement.entity.Student;
-import com.project.sportsManagement.exception.InstitutionNotFoundException;
 import com.project.sportsManagement.exception.UserAlreadyExistsException;
 import com.project.sportsManagement.exception.UserNotFoundException;
 import com.project.sportsManagement.repo.InstitutionRepository;
@@ -25,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -52,21 +51,15 @@ public class AuthenticationService {
     private UserService userService;
 
 
-    public Student registerStudent(StudentRegistrationDto studentRegistrationDto){
-        Optional<Student> studentOptional = studentRepository.findByEmail(studentRegistrationDto.getEmail());
-        if (studentOptional.isPresent()){
-            throw new UserAlreadyExistsException("User already Exists with this Email Id");
-        }
-        Optional<Student> studentOptional1 = studentRepository.findByRollNo(studentRegistrationDto.getRollNo());
-        if (studentOptional1.isPresent()){
-            throw new UserAlreadyExistsException("User already Exists with this Roll no. ");
-        }
-
+    public void registerStudent(Student student){
 
         Role studentAuthority = roleRepository.findByAuthority("STUDENT").get();
-        String encodedPassword = passwordEncoder.encode(studentRegistrationDto.getPassword());
-        Institution institutionCode = institutionRepository.findByInstitutionCode(studentRegistrationDto.getInstitutionCode()).orElseThrow(() -> new InstitutionNotFoundException("Institution not found with the given institution code"));
-        return studentRepository.saveAndFlush(new Student(studentRegistrationDto.getFirstName(),studentRegistrationDto.getLastName(),studentRegistrationDto.getRollNo(),studentRegistrationDto.getEmail(),encodedPassword,institutionCode,studentAuthority));
+        String encodedPassword = passwordEncoder.encode(student.getPassword());
+        student.setAuthority(studentAuthority);
+        student.setPassword(encodedPassword);
+        student.setCreatedAt(new Date());
+        student.setUpdatedAt(new Date());
+        studentRepository.saveAndFlush(student);
     }
 
 
@@ -123,4 +116,9 @@ public class AuthenticationService {
         return null;
     }
 
+    public void modifyStudentDetails(Student student) {
+        student.setUpdatedAt(new Date());
+        studentRepository.saveAndFlush(student);
+
+    }
 }

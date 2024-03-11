@@ -8,9 +8,11 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-
+@AnonymousAllowed
 public class MainLayout extends AppLayout {
 
     private AuthenticationService authenticationService;
@@ -31,10 +33,16 @@ public class MainLayout extends AppLayout {
         nav.addItem(
                 new SideNavItem("Home","",VaadinIcon.HOME.create()),
                 new SideNavItem("Profile", "profile", VaadinIcon.USER.create()),
-                new SideNavItem("My Events","/my-events",VaadinIcon.PLAY.create())
-
+                new SideNavItem("My Events","my-events",VaadinIcon.PLAY.create())
         );
+        if (SecurityContextHolder.getContext().getAuthentication() != null){
+            nav.addItem(new SideNavItem("logout","login",VaadinIcon.POWER_OFF.create()));
+
+        }
         nav.getItems().forEach(sideNavItem -> sideNavItem.getStyle().set("margin","10px"));
+
+
+
         return nav;
     }
 

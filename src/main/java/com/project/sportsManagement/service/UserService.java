@@ -25,8 +25,6 @@ public class UserService implements UserDetailsService {
     private InstitutionRepository institutionRepository;
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        System.out.println("In the user service for authentication");
-
        Optional<Student> student = studentRepository.findByEmail(email);
         if (student.isPresent()) {
             return student.get();

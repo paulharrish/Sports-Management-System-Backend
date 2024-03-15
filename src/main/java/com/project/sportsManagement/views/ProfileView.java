@@ -22,34 +22,22 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver {
     public ProfileView(AuthenticationService authenticationService,UserService userService) {
         this.authenticationService = authenticationService;
         this.userService = userService;
-
-        studentProfileViewForm = new StudentProfileViewForm(userService.getAllInstitution(),true);
-        studentProfileViewForm.save.setEnabled(false);
         if (authenticationService.getAuthenticatedUser() instanceof Student){
+            // creating a student profile view form if the current user is a student.
+            studentProfileViewForm = new StudentProfileViewForm(userService.getAllInstitution(),true,(Student)authenticationService.getAuthenticatedUser(),authenticationService);
             add(studentProfileViewForm);
+            studentProfileViewForm.save.setEnabled(false);
 
         }
 
-
-        studentProfileViewForm.binder.readBean(getCurrentUser());
-
-        studentProfileViewForm.binder.setBean(getCurrentUser());
-
+        // calls the method when a user clicks the save button
         studentProfileViewForm.save.addClickListener(click -> {
-            if (studentProfileViewForm.binder.validate().isOk()) {
-                authenticationService.modifyStudentDetails(getCurrentUser());
-                add(new Span("Student Details Modified SuccessFully."));
-                studentProfileViewForm.setReadOnlyMode(true);
-                studentProfileViewForm.save.setEnabled(false);
-            }
+            studentProfileViewForm.saveEvent();
         });
 
 
     }
 
-    private Student getCurrentUser(){
-        return (Student)authenticationService.getAuthenticatedUser();
-    }
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {

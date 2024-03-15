@@ -3,17 +3,26 @@ package com.project.sportsManagement.views;
 import com.project.sportsManagement.entity.Institution;
 import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.service.AuthenticationService;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.dom.Style;
+import com.vaadin.flow.server.VaadinServletRequest;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.Lumo;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+
 @CssImport(value = "style.css")
 public class NavBarCreator {
+
+
 
     public NavBarCreator() {
     }
@@ -24,15 +33,6 @@ public class NavBarCreator {
         title.getStyle().set("font-size", "var(--lumo-font-size-xl)");
         title.addClassName("title");
         toggle.getStyle().set("color","white");
-        Div logoutMenu = new Div();
-        logoutMenu.getStyle().setPosition(Style.Position.ABSOLUTE);
-        logoutMenu.setWidth("200px");
-        logoutMenu.setHeight("50px");
-        logoutMenu.getStyle().set("left","87%");
-        logoutMenu.getStyle().set("margin-right","40px");
-        logoutMenu.getStyle().setBackgroundColor("white");
-        logoutMenu.getStyle().setVisibility(Style.Visibility.HIDDEN);
-        logoutMenu.getStyle().setBoxShadow("0 4px 8px 0 rgba(0, 0, 0, 0.2)");
 
         HorizontalLayout header = null;
         if (authenticationService.getAuthenticatedUser() != null) {
@@ -48,9 +48,22 @@ public class NavBarCreator {
                 userAvatar.getStyle().set("background-color","#208070");
                 userAvatar.getStyle().set("color","white");
                 userAvatar.getStyle().set("border","0.2px #dadada solid");
+                ContextMenu contextMenu = new ContextMenu(userAvatar);
+                contextMenu.addItem("logout",click ->{
+                    SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+                    logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(),null,null);
+
+                    //Closing the Vaadin Session explicitly.
+                    VaadinSession vaadinSession = VaadinSession.getCurrent();
+                    vaadinSession.close();
+                });
+                contextMenu.addItem("Manage profile",clickEvent ->{
+
+                });
+
                 greetingText = new Span("Welcome " + student.getFirstName());
                 greetingText.addClassName("greeting-text");
-                header = new HorizontalLayout(toggle, title, userAvatar,logoutMenu);
+                header = new HorizontalLayout(toggle, title, userAvatar);
             } else if (authenticationService.getAuthenticatedUser() instanceof Institution) {
                 Institution institution = (Institution) authenticationService.getAuthenticatedUser();
                 userAvatar = new Avatar(institution.getInstitutionName());
@@ -62,7 +75,7 @@ public class NavBarCreator {
                 userAvatar.getStyle().set("border","0.2px #dadada solid");
                 greetingText = new Span("Welcome " + institution.getInstitutionName());
                 greetingText.addClassName("greeting-text");
-                header = new HorizontalLayout(toggle, title, userAvatar,logoutMenu);
+                header = new HorizontalLayout(toggle, title, userAvatar);
             }
 
         }
@@ -76,4 +89,5 @@ public class NavBarCreator {
         header.getThemeList().add(Lumo.DARK);
         return header;
     }
+
 }

@@ -35,10 +35,6 @@ public class MainLayout extends AppLayout {
                 new SideNavItem("Profile", "profile", VaadinIcon.USER.create()),
                 new SideNavItem("My Events","my-events",VaadinIcon.PLAY.create())
         );
-        if (SecurityContextHolder.getContext().getAuthentication() != null){
-            nav.addItem(new SideNavItem("logout","login",VaadinIcon.POWER_OFF.create()));
-
-        }
         nav.getItems().forEach(sideNavItem -> sideNavItem.getStyle().set("margin","10px"));
 
 

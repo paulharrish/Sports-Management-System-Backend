@@ -19,20 +19,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class RegistrationView extends VerticalLayout {
 
 
-    private UserService userService;
+    private final UserService userService;
 
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
     Button registerButton = new Button("Click here");
     Span registerTextInstitution = new Span("Want to Register Your Institution,");
-
-
     Span enterDetailsText = new Span("Enter Your Details Here.");
 
     HorizontalLayout  header = new HorizontalLayout(registerTextInstitution,registerButton);
-
-
     private Student student;
 
 

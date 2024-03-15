@@ -14,7 +14,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Route(value = "register/student",layout = MainLayout.class)
+@Route(value = "register",layout = MainLayout.class)
 @AnonymousAllowed
 public class RegistrationView extends VerticalLayout {
 

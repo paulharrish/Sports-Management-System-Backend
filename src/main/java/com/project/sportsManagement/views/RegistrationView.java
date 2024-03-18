@@ -36,6 +36,7 @@ public class RegistrationView extends VerticalLayout {
 
     @Autowired
     public RegistrationView(UserService userService, AuthenticationService authenticationService, StudentRepository studentRepository) {
+        setAlignItems(Alignment.CENTER);
         this.userService = userService;
         this.authenticationService = authenticationService;
         this.studentRepository = studentRepository;
@@ -51,6 +52,8 @@ public class RegistrationView extends VerticalLayout {
         registerButton.addClickListener(click -> {
             remove(header,studentRegistrationForm);
             add(institutionRegistrationForm);
+
+
         });
 
 

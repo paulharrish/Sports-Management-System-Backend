@@ -45,7 +45,6 @@ public class StudentRegistrationForm extends FormLayout {
         this.studentRepository = studentRepository;
         institution.setItems(institutions);
         institution.setItemLabelGenerator(Institution::getInstitutionName);
-        setWidth("20%");
         binder.forField(firstName).asRequired("FirstName Cannot be empty").bind(Student::getFirstName,Student::setFirstName);
         binder.forField(lastName).asRequired("Last Name Cannot be empty").bind(Student::getLastName,Student::setLastName);
         binder.forField(rollNo).asRequired("Roll no cannot be empty").bind(Student::getRollNo,Student::setRollNo);
@@ -77,7 +76,6 @@ public class StudentRegistrationForm extends FormLayout {
         close.addClickShortcut(Key.ESCAPE);
 
         HorizontalLayout buttonLayout =  new HorizontalLayout(save, delete, close);
-        buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         buttonLayout.getStyle().set("margin-top","20px");
         return buttonLayout;
     }

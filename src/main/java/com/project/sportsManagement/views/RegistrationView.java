@@ -29,23 +29,21 @@ public class RegistrationView extends VerticalLayout {
     Span enterDetailsText = new Span("Enter Your Details Here.");
 
     HorizontalLayout  header = new HorizontalLayout(registerTextInstitution,registerButton);
-    private Student student;
 
 
 
 
     @Autowired
     public RegistrationView(UserService userService, AuthenticationService authenticationService, StudentRepository studentRepository) {
-        setAlignItems(Alignment.CENTER);
+        setAlignItems(Alignment.START);
         this.userService = userService;
         this.authenticationService = authenticationService;
         this.studentRepository = studentRepository;
-        this.student= new Student();
-        StudentRegistrationForm studentRegistrationForm = new StudentRegistrationForm(userService.getAllInstitution(),studentRepository);
+        StudentRegistrationForm studentRegistrationForm = new StudentRegistrationForm(userService.getAllInstitution(),studentRepository,authenticationService);
         InstitutionRegistrationForm institutionRegistrationForm = new InstitutionRegistrationForm();
         header.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
         registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        add(header,studentRegistrationForm);
+        add(header,enterDetailsText,studentRegistrationForm);
         addClassName("registration-view");
         setSizeFull();
 
@@ -53,23 +51,6 @@ public class RegistrationView extends VerticalLayout {
             remove(header,studentRegistrationForm);
             add(institutionRegistrationForm);
 
-
-        });
-
-
-        studentRegistrationForm.binder.setBean(student);
-
-        studentRegistrationForm.save.addClickListener(click ->{
-            if (studentRegistrationForm.binder.validate().isOk()){
-                authenticationService.registerStudent(student);
-                studentRegistrationForm.binder.setBean(new Student());
-                add(new Span("User registered Succesfully."));
-                UI.getCurrent().navigate("login");
-            }
-        });
-
-        studentRegistrationForm.delete.addClickListener(click -> {
-            studentRegistrationForm.binder.setBean(new Student());
         });
 
     }

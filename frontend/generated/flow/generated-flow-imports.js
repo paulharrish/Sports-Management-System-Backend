@@ -5,8 +5,8 @@ import $cssFromFile_0 from 'Frontend/style.css?inline';
 
 injectGlobalCss($cssFromFile_0.toString(), 'CSSImport end', document);
 import '@vaadin/polymer-legacy-adapter/style-modules.js';
-import '@vaadin/form-layout/theme/lumo/vaadin-form-layout.js';
 import '@vaadin/vertical-layout/theme/lumo/vaadin-vertical-layout.js';
+import '@vaadin/form-layout/theme/lumo/vaadin-form-layout.js';
 import '@vaadin/custom-field/theme/lumo/vaadin-custom-field.js';
 import '@vaadin/app-layout/theme/lumo/vaadin-app-layout.js';
 import '@vaadin/common-frontend/ConnectionIndicator.js';

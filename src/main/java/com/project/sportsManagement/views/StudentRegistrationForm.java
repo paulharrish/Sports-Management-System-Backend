@@ -5,10 +5,12 @@ import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.repo.StudentRepository;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -38,21 +40,44 @@ public class StudentRegistrationForm extends FormLayout {
     Binder<Student> binder = new Binder<>(Student.class);
 
 
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
+
+    private final AuthenticationService authenticationService;
+
+    private Student student;
 
 
-    public StudentRegistrationForm(List<Institution> institutions, StudentRepository studentRepository) {
+    public StudentRegistrationForm(List<Institution> institutions, StudentRepository studentRepository,AuthenticationService authenticationService) {
         this.studentRepository = studentRepository;
+        this.authenticationService = authenticationService;
         institution.setItems(institutions);
         institution.setItemLabelGenerator(Institution::getInstitutionName);
+        this.student = new Student();
         binder.forField(firstName).asRequired("FirstName Cannot be empty").bind(Student::getFirstName,Student::setFirstName);
         binder.forField(lastName).asRequired("Last Name Cannot be empty").bind(Student::getLastName,Student::setLastName);
         binder.forField(rollNo).asRequired("Roll no cannot be empty").bind(Student::getRollNo,Student::setRollNo);
         binder.forField(email).withValidator(new EmailValidator("Please enter a valid email",false)).withValidator(validate -> isalreadyRegistered(email.getValue()),"This email is already registered").bind(Student::getEmail,Student::setEmail);
         binder.forField(password).asRequired("Password Cannot be Empty").bind(Student::getPassword,Student::setPassword);
         binder.bind(institution,Student::getInstitution,Student::setInstitution);
-
         add(firstName,lastName,rollNo,email,password,institution,getButtonsLayout());
+
+
+        binder.setBean(student);
+
+
+        save.addClickListener(click ->{
+            if (binder.validate().isOk()){
+                authenticationService.registerStudent(student);
+                binder.setBean(new Student());
+                add(new Span("User registered Succesfully."));
+                UI.getCurrent().navigate("login");
+            }
+        });
+
+        delete.addClickListener(click -> {
+            binder.setBean(new Student());
+        });
+
     }
 
     private Boolean isalreadyRegistered(String email) {
@@ -63,9 +88,6 @@ public class StudentRegistrationForm extends FormLayout {
         return true;
     }
 
-    private void registerStudent(AuthenticationService authenticationService, Student student) {
-        authenticationService.registerStudent(student);
-    }
 
     private HorizontalLayout getButtonsLayout() {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);

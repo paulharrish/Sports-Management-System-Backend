@@ -1,5 +1,6 @@
 package com.project.sportsManagement.views;
 
+import com.project.sportsManagement.entity.Institution;
 import com.project.sportsManagement.entity.Location;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -13,6 +14,8 @@ import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.validator.EmailValidator;
 
 public class InstitutionRegistrationForm extends FormLayout {
 
@@ -28,10 +31,21 @@ Button save = new Button("Save");
 Button delete = new Button("Delete");
 Button close = new Button("Cancel");
 
+Binder<Institution> binder = new Binder<>(Institution.class);
+
+private Institution institution;
+
 
     public InstitutionRegistrationForm() {
-        setWidth("30%");
+        this.institution = new Institution();
         add(institutionCode,institutionName,email,password,address,getButtonsLayout());
+        binder.forField(institutionCode).asRequired("InstituionCode Cannot be empty").bind(Institution::getInstitutionCode,Institution::setInstitutionCode);
+        binder.forField(institutionName).asRequired("Institution Name cannot be empty").bind(Institution::getInstitutionName,Institution::setInstitutionName);
+        binder.forField(email).withValidator(new EmailValidator("Enter a valid email address")).bind(Institution::getEmail,Institution::setEmail);
+        binder.forField(password).asRequired("Password cannot be empty").bind(Institution::getPassword,Institution::setPassword);
+        binder.forField(address).asRequired("This field cannot be empty").bind(Institution::getAddress,Institution::setAddress);
+
+        binder.setBean(institution);
     }
 
     private HorizontalLayout getButtonsLayout() {

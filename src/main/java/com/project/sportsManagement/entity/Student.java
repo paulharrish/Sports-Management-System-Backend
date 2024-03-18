@@ -100,7 +100,7 @@ public class Student implements UserDetails {
         this.participation = new HashSet<>();
     }
 
-    public long getStudentId() {
+    public int getStudentId() {
         return studentId;
     }
 

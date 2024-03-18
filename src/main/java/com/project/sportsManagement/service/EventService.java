@@ -1,6 +1,7 @@
 package com.project.sportsManagement.service;
 
 import com.project.sportsManagement.entity.Event;
+import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.repo.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,5 +29,9 @@ public class EventService {
         }else {
             return eventRepository.searchByCollege(filterText);
         }
+    }
+
+    public List<Event> getParticipatedEvents(Student student){
+        return eventRepository.getParticipatedEvents(student);
     }
 }

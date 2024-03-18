@@ -1,6 +1,7 @@
 package com.project.sportsManagement.repo;
 
 import com.project.sportsManagement.entity.Event;
+import com.project.sportsManagement.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,4 +20,10 @@ public interface EventRepository extends JpaRepository<Event,Integer> {
          "join Institution i on e.host = i "+
  "where lower(i.institutionName) like lower(concat('%',:searchTerm,'%'))")
     List<Event> searchByCollege( @Param("searchTerm") String filterText);
+
+ @Query("select e from Event e " +
+ "join EventGame eg on eg.eventId = e " +
+ "join Participation p on p.gameCode = eg " +
+ "where p.studentId = :studentId")
+    List<Event> getParticipatedEvents(@Param("studentId") Student student);
 }

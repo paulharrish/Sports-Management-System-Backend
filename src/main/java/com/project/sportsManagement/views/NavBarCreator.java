@@ -14,6 +14,7 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.dom.Style;
+import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.Lumo;
@@ -57,9 +58,7 @@ public class NavBarCreator {
                     VaadinSession vaadinSession = VaadinSession.getCurrent();
                     vaadinSession.close();
                 });
-                contextMenu.addItem("Manage profile",clickEvent ->{
-
-                });
+                contextMenu.addItem(new RouterLink("Manage Profile", ProfileView.class));
 
                 greetingText = new Span("Welcome " + student.getFirstName());
                 greetingText.addClassName("greeting-text");

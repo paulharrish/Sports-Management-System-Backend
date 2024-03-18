@@ -44,7 +44,7 @@ public class RegistrationView extends VerticalLayout {
         InstitutionRegistrationForm institutionRegistrationForm = new InstitutionRegistrationForm();
         header.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
         registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        add(header,enterDetailsText,studentRegistrationForm);
+        add(header,studentRegistrationForm);
         addClassName("registration-view");
         setSizeFull();
 

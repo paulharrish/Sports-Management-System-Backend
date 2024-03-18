@@ -23,5 +23,7 @@ LocationField address = new LocationField();
     public InstitutionRegistrationForm() {
         setWidth("30%");
         add(institutionCode,institutionName,email,password,address);
+
+
     }
 }

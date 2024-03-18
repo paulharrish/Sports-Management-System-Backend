@@ -13,9 +13,9 @@ import java.util.Collections;
 
 public class LocationField extends CustomField<Location> {
 
-    private TextArea institutionAddress = new TextArea("Institution Address");
-    private TextField district = new TextField("District");
-    private TextField state = new TextField("State");
+    private final TextArea institutionAddress = new TextArea("Institution Address");
+    private final TextField district = new TextField("District");
+    private final TextField state = new TextField("State");
 
 
     public LocationField() {

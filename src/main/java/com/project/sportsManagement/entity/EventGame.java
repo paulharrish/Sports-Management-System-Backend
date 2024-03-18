@@ -18,7 +18,7 @@ public class EventGame {
     @ManyToOne()
     @JoinColumn(name = "game_id",referencedColumnName = "game_id")
     private Game gameId;
-    @OneToMany(mappedBy = "gameCode",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "gameCode",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private Set<Participation> participation;
 
     public EventGame() {

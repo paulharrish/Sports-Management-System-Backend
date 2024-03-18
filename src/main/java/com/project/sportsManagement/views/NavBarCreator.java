@@ -20,7 +20,7 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
-@CssImport(value = "style.css")
+@CssImport(value = "styles.css")
 public class NavBarCreator {
 
 

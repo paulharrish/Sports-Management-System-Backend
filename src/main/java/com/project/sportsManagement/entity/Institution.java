@@ -3,7 +3,6 @@ package com.project.sportsManagement.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -152,5 +151,10 @@ public class Institution implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return address.getInstitutionAddress() + ",\n" + address.getDistrict() + ",\n" + address.getState()+".";
     }
 }

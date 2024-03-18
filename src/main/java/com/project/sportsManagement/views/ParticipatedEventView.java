@@ -5,6 +5,7 @@ import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.project.sportsManagement.service.EventService;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -22,6 +23,8 @@ public class ParticipatedEventView extends VerticalLayout {
     Span headerText = new Span("Find the list of events you have participated below.");
     Grid<Event> participatedEventsGrid = new Grid<>(Event.class);
 
+    H2 noParticipatedEvents = new H2("Sorry, You have currently not Participated in any events.");
+
 
     EventService eventService;
 
@@ -32,14 +35,17 @@ public class ParticipatedEventView extends VerticalLayout {
     public ParticipatedEventView(AuthenticationService authenticationService, EventService eventService) {
         this.authenticationService = authenticationService;
         this.eventService = eventService;
-        configureGrid();
-        add(headerText,participatedEventsGrid);
-        participatedEventsGrid.setItems(eventService.getParticipatedEvents(getCurrentUser()));
+        if (!eventService.getParticipatedEvents(getCurrentUser()).isEmpty()){
+            configureGrid();
+            add(headerText,participatedEventsGrid);
+        }else {
+            add(headerText,noParticipatedEvents);
+        }
+
 
     }
 
     private void configureGrid() {
-        participatedEventsGrid.setSizeFull();
         participatedEventsGrid.setColumns("eventId","eventName");
         participatedEventsGrid.addColumn(event -> event.getHost().getInstitutionName()).setHeader("Host");
         participatedEventsGrid.addColumn(event -> event.getLevel().getLevel()).setHeader("Level");
@@ -56,6 +62,7 @@ public class ParticipatedEventView extends VerticalLayout {
             return statusBadge;
         })).setHeader("Status").setAutoWidth(true);
         participatedEventsGrid.getColumns().forEach(column -> column.setAutoWidth(true));
+        participatedEventsGrid.setItems(eventService.getParticipatedEvents(getCurrentUser()));
 
     }
 

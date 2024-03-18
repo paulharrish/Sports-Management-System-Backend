@@ -114,8 +114,13 @@ public class ListView extends VerticalLayout implements BeforeEnterObserver {
             return statusBadge;
         })).setHeader("Status").setAutoWidth(true);
         eventGrid.getColumns().forEach(column -> column.setAutoWidth(true));
+        eventGrid.asSingleSelect().addValueChangeListener(e -> {
+            getUI().ifPresent(ui -> ui.navigate("event/" + e.getValue().getEventId()));
+        });
 
     }
+
+
 
     private String determineStatus(Timestamp startTime, Timestamp endTime) {
         Instant currentInstant = Instant.now();

@@ -36,7 +36,7 @@ public class Event {
     @JoinColumn(name = "level",referencedColumnName = "level_id")
     private EventLevel level;
 
-    @OneToMany(mappedBy = "eventId",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "eventId",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private Set<EventGame> games;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -141,5 +141,13 @@ public class Event {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Set<EventGame> getGames() {
+        return games;
+    }
+
+    public void setGames(Set<EventGame> games) {
+        this.games = games;
     }
 }

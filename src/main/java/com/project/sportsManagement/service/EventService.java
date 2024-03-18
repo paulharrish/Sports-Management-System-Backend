@@ -1,8 +1,10 @@
 package com.project.sportsManagement.service;
 
 import com.project.sportsManagement.entity.Event;
+import com.project.sportsManagement.entity.Game;
 import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.repo.EventRepository;
+import com.project.sportsManagement.repo.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,9 @@ public class EventService {
 
     @Autowired
     private  EventRepository eventRepository;
+
+    @Autowired
+    private GameRepository gameRepository;
 
     public List<Event> filterByName(String filterText){
         if (filterText == null || filterText.isEmpty()){
@@ -33,5 +38,13 @@ public class EventService {
 
     public List<Event> getParticipatedEvents(Student student){
         return eventRepository.getParticipatedEvents(student);
+    }
+
+    public Event getEventById(int eventId){
+        return eventRepository.findById(eventId).get();
+    }
+
+    public Game getGameById(int gameId) {
+        return gameRepository.findById(gameId).get();
     }
 }

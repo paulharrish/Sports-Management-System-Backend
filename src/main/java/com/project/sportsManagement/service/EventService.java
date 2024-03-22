@@ -1,9 +1,6 @@
 package com.project.sportsManagement.service;
 
-import com.project.sportsManagement.entity.Event;
-import com.project.sportsManagement.entity.Game;
-import com.project.sportsManagement.entity.Participation;
-import com.project.sportsManagement.entity.Student;
+import com.project.sportsManagement.entity.*;
 import com.project.sportsManagement.repo.EventRepository;
 import com.project.sportsManagement.repo.GameRepository;
 import com.project.sportsManagement.repo.ParticipationRepository;
@@ -12,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,5 +64,14 @@ public class EventService {
 
     List<Student> getEventParticipants(int eventId){
         return eventRepository.getEventParticipants(eventId);
+    }
+
+    public int getTotalNoOfEventParticipants(Event event){
+        int noOfParticipants = 0;
+        Set<EventGame> eventGameInstances = event.getGames();
+        for (EventGame eventGameInstance : eventGameInstances){
+            noOfParticipants = noOfParticipants + eventGameInstance.getParticipation().size();
+        }
+        return noOfParticipants;
     }
 }

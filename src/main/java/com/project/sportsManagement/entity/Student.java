@@ -71,7 +71,7 @@ public class Student implements UserDetails {
     @JoinColumn(name = "role_id",referencedColumnName = "role_id")
     private Role authority;
 
-    @OneToMany(mappedBy = "studentId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "student",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<Participation> participation;
 
     @Temporal(TemporalType.TIMESTAMP)

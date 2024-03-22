@@ -24,6 +24,14 @@ public interface EventRepository extends JpaRepository<Event,Integer> {
  @Query("select e from Event e " +
  "join EventGame eg on eg.eventId = e " +
  "join Participation p on p.gameCode = eg " +
- "where p.studentId = :studentId")
-    List<Event> getParticipatedEvents(@Param("studentId") Student student);
+ "where p.student = :student")
+    List<Event> getParticipatedEvents(@Param("student") Student Student);
+
+
+    @Query("select s from Student s "+
+            "join Participation p on p.student = s "+
+            "join EventGame eg on p.gameCode = eg "+
+            "join Event e on eg.eventId = e "+
+            "where e.eventId = :eventId")
+    List<Student> getEventParticipants(int eventId);
 }

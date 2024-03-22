@@ -11,7 +11,7 @@ public class Participation {
     private int participationId;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "student_id",referencedColumnName = "student_id")
-    private Student studentId;
+    private Student student;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "game_code",referencedColumnName = "game_code")
@@ -20,8 +20,8 @@ public class Participation {
     public Participation() {
     }
 
-    public Participation(Student studentId, EventGame gameCode) {
-        this.studentId = studentId;
+    public Participation(Student student, EventGame gameCode) {
+        this.student = student;
         this.gameCode = gameCode;
     }
 
@@ -33,12 +33,12 @@ public class Participation {
         this.participationId = participationId;
     }
 
-    public Student getStudentId() {
-        return studentId;
+    public Student getStudent() {
+        return student;
     }
 
-    public void setStudentId(Student studentId) {
-        this.studentId = studentId;
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
     public EventGame getGameCode() {

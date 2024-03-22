@@ -43,13 +43,15 @@ public class EventService {
     }
 
     public List<Event> getParticipatedEvents(Student student){
-        Set<Participation> participations = student.getParticipation();
-        List<Event> participatedevents = new ArrayList<>();
-        for (Participation participation  : participations){
-            Event participatedevent = participation.getGameCode().getEventId();
-            participatedevents.add(participatedevent);
-        }
-        return participatedevents;
+//        Set<Participation> participations = student.getParticipation();
+//        List<Event> participatedevents = new ArrayList<>();
+//        for (Participation participation  : participations){
+//            Event participatedevent = participation.getGameCode().getEventId();
+//            participatedevents.add(participatedevent);
+//        }
+
+        //these lines are commented out because live changes in db is not reflecting here. so everytime fetching the records from db using query method.
+        return eventRepository.getParticipatedEvents(student);
     }
 
     public Event getEventById(int eventId){

@@ -59,8 +59,6 @@ public class AppConfig extends VaadinWebSecurity {
     }
 
 
-
-
     @Bean
     public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(keys.getPublicKey()).build();

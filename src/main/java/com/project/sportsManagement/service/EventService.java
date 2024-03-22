@@ -1,12 +1,11 @@
 package com.project.sportsManagement.service;
 
 import com.project.sportsManagement.entity.*;
-import com.project.sportsManagement.repo.EventRepository;
-import com.project.sportsManagement.repo.GameRepository;
-import com.project.sportsManagement.repo.ParticipationRepository;
+import com.project.sportsManagement.repo.*;
 import com.project.sportsManagement.responseclasses.ParticipationDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,12 @@ public class EventService {
 
     @Autowired
     private ParticipationRepository participationRepository;
+
+    @Autowired
+    private EventGameRepository eventGameRepository;
+
+    @Autowired
+    private StudentRepository studentRepository;
 
     public List<Event> filterByName(String filterText){
         if (filterText == null || filterText.isEmpty()){
@@ -92,5 +97,14 @@ public class EventService {
                 games.add(eventGame.getGameId());
         }
         return games;
+    }
+    @Transactional
+    public void participateInAEvent(Student student,Set<EventGame> gameList){
+        for(EventGame game : gameList){
+            Student studentManaged = studentRepository.findByStudentId(student.getStudentId());
+            EventGame eventGameManaged = eventGameRepository.findById(game.getGameCode()).get();
+            Participation participation = new Participation(studentManaged,eventGameManaged);
+            participationRepository.saveAndFlush(participation);
+        }
     }
 }

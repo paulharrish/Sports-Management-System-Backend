@@ -2,14 +2,19 @@ package com.project.sportsManagement.views;
 
 import com.project.sportsManagement.entity.Event;
 import com.project.sportsManagement.entity.EventGame;
-import com.project.sportsManagement.entity.Game;
+import com.project.sportsManagement.entity.Student;
+import com.project.sportsManagement.service.AuthenticationService;
 import com.project.sportsManagement.service.EventService;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEvent;
@@ -18,21 +23,21 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.time.Instant;
 
 @PermitAll
 @Route(value = "event",layout = MainLayout.class)
 public class EventView extends VerticalLayout implements HasUrlParameter<Integer> {
 
+    private final AuthenticationService authenticationService;
     private EventService eventService;
 
 
 
-    public EventView(@Autowired EventService eventService) {
+
+    public EventView(@Autowired EventService eventService, @Autowired AuthenticationService auth) {
         this.eventService = eventService;
+        this.authenticationService = auth;
         getStyle().set("gap","40px");
     }
 
@@ -87,8 +92,16 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
             HorizontalLayout bl = new HorizontalLayout();
             Button participateBtn = new Button("Participate in this Event");
             participateBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY,ButtonVariant.LUMO_SUCCESS);
-            bl.add(participateBtn);
-
+            Button back = new Button("Back");
+            back.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            back.addClickListener(click -> {
+                UI.getCurrent().navigate("");
+            });
+            if (event.getStartTime().toInstant().isAfter(Instant.now())){
+                bl.add(participateBtn,back);
+            }else {
+                bl.add(back);
+            }
 
             //click listener for participating button
             participateBtn.addClickListener(click -> {
@@ -97,11 +110,15 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
                 Span headerText = new Span("Select the games you wish to participate:");
                 HorizontalLayout hl = new HorizontalLayout();
 
-                MultiSelectComboBox<Game> comboBox= new MultiSelectComboBox<>();
-                comboBox.setItems(eventService.getGamesInAEvent(event));
-                comboBox.setItemLabelGenerator(Game::getGame);
+                MultiSelectComboBox<EventGame> comboBox= new MultiSelectComboBox<>();
+                comboBox.setItems(event.getGames());
+                comboBox.setItemLabelGenerator(eventGame -> eventGame.getGameId().getGame());
                 Button ok = new Button("Ok");
                 ok.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+                ok.addClickListener(clickEvent -> {
+                    eventService.participateInAEvent(getCurrentUser(),comboBox.getSelectedItems());
+                    participationDialogue.close();
+                });
                 hl.add(comboBox,ok);
                 vl.add(headerText,hl);
                 participationDialogue.add(vl);
@@ -113,6 +130,9 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
 
     }
 
+    private Student getCurrentUser() {
+        return (Student)authenticationService.getAuthenticatedUser();
+    }
 
 
 

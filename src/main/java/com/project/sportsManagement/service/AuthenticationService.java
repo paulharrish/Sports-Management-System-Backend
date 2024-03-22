@@ -10,6 +10,7 @@ import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.exception.UserAlreadyExistsException;
 import com.project.sportsManagement.exception.UserNotFoundException;
 import com.project.sportsManagement.repo.InstitutionRepository;
+import com.project.sportsManagement.repo.LocationRepository;
 import com.project.sportsManagement.repo.RoleRepository;
 import com.project.sportsManagement.repo.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,9 @@ public class AuthenticationService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private LocationRepository locationRepository;
+
 
     public void registerStudent(Student student){
 
@@ -63,22 +67,18 @@ public class AuthenticationService {
     }
 
 
-    public Institution registerInstitution(InstitutionRegistrationDto institutionRegistrationDto){
+    public void registerInstitution(Institution institution){
 
-        Optional<Institution> institutionOptional = institutionRepository.findByEmail(institutionRegistrationDto.getEmail());
-        if (institutionOptional.isPresent()){
-            throw new UserAlreadyExistsException("Institution Already exists with this email");
-        }
-
-        Optional<Institution> institutionOptional2 = institutionRepository.findByInstitutionCode(institutionRegistrationDto.getInstitutionCode());
-        if (institutionOptional2.isPresent()){
-            throw new UserAlreadyExistsException("Institution Already exists with this Institution Code");
-        }
 
         Role institutionAuthority = roleRepository.findByAuthority("INSTITUTION").get();
-        String encodedPassword = passwordEncoder.encode(institutionRegistrationDto.getPassword());
-        Location location = new Location(institutionRegistrationDto.getInstitutionAddress(), institutionRegistrationDto.getDistrict(), institutionRegistrationDto.getState());
-        return  institutionRepository.saveAndFlush(new Institution(institutionRegistrationDto.getInstitutionCode(),institutionRegistrationDto.getInstitutionName(),institutionRegistrationDto.getEmail(),encodedPassword,institutionAuthority,location));
+        String encodedPassword = passwordEncoder.encode(institution.getPassword());
+        institution.setAuthority(institutionAuthority);
+        institution.setPassword(encodedPassword);
+        institution.setCreatedAt(new Date());
+        institution.setUpdatedAt(new Date());
+        Location location = institution.getAddress();
+        locationRepository.saveAndFlush(location);
+        institutionRepository.saveAndFlush(institution);
 
     }
 

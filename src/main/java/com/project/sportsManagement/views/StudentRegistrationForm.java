@@ -17,6 +17,7 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.EmailValidator;
+import com.vaadin.flow.dom.Style;
 
 import java.util.List;
 import java.util.Optional;
@@ -53,6 +54,8 @@ public class StudentRegistrationForm extends FormLayout {
         institution.setItems(institutions);
         institution.setItemLabelGenerator(Institution::getInstitutionName);
         this.student = new Student();
+
+
         binder.forField(firstName).asRequired("FirstName Cannot be empty").bind(Student::getFirstName,Student::setFirstName);
         binder.forField(lastName).asRequired("Last Name Cannot be empty").bind(Student::getLastName,Student::setLastName);
         binder.forField(rollNo).asRequired("Roll no cannot be empty").bind(Student::getRollNo,Student::setRollNo);
@@ -61,7 +64,7 @@ public class StudentRegistrationForm extends FormLayout {
         binder.bind(institution,Student::getInstitution,Student::setInstitution);
         add(firstName,lastName,rollNo,email,password,institution,getButtonsLayout());
 
-
+        //to read and write the student bean automatically.
         binder.setBean(student);
 
 
@@ -69,13 +72,16 @@ public class StudentRegistrationForm extends FormLayout {
             if (binder.validate().isOk()){
                 authenticationService.registerStudent(student);
                 binder.setBean(new Student());
-                add(new Span("User registered Succesfully."));
                 UI.getCurrent().navigate("login");
             }
         });
 
         delete.addClickListener(click -> {
             binder.setBean(new Student());
+        });
+
+        close.addClickListener(click -> {
+           UI.getCurrent().navigate("login");
         });
 
     }
@@ -99,6 +105,7 @@ public class StudentRegistrationForm extends FormLayout {
 
         HorizontalLayout buttonLayout =  new HorizontalLayout(save, delete, close);
         buttonLayout.getStyle().set("margin-top","20px");
+        buttonLayout.getStyle().setJustifyContent(Style.JustifyContent.SPACE_BETWEEN);
         return buttonLayout;
     }
 }

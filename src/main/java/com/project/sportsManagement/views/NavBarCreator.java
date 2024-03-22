@@ -20,7 +20,7 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
-@CssImport(value = "styles.css")
+
 public class NavBarCreator {
 
 
@@ -72,6 +72,16 @@ public class NavBarCreator {
                 userAvatar.getStyle().set("background-color","#208070");
                 userAvatar.getStyle().set("color","white");
                 userAvatar.getStyle().set("border","0.2px #dadada solid");
+                ContextMenu contextMenu = new ContextMenu(userAvatar);
+                contextMenu.addItem("logout",click ->{
+                    SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+                    logoutHandler.logout(VaadinServletRequest.getCurrent().getHttpServletRequest(),null,null);
+
+                    //Closing the Vaadin Session explicitly.
+                    VaadinSession vaadinSession = VaadinSession.getCurrent();
+                    vaadinSession.close();
+                });
+                contextMenu.addItem(new RouterLink("Manage Profile", ProfileView.class));
                 greetingText = new Span("Welcome " + institution.getInstitutionName());
                 greetingText.addClassName("greeting-text");
                 header = new HorizontalLayout(toggle, title, userAvatar);

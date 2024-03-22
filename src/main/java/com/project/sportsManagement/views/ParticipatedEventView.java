@@ -62,6 +62,7 @@ public class ParticipatedEventView extends VerticalLayout {
             return statusBadge;
         })).setHeader("Status").setAutoWidth(true);
         participatedEventsGrid.getColumns().forEach(column -> column.setAutoWidth(true));
+        participatedEventsGrid.setHeight("200px");
         participatedEventsGrid.setItems(eventService.getParticipatedEvents(getCurrentUser()));
 
     }

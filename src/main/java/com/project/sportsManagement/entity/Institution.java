@@ -14,7 +14,7 @@ public class Institution implements UserDetails {
 
     @Id
     @Column(name = "institution_code")
-    private int institutionCode;
+    private Integer institutionCode;
 
     @Column(name = "institution_name")
     private String institutionName;
@@ -46,7 +46,11 @@ public class Institution implements UserDetails {
     public Institution() {
     }
 
-    public Institution(int institutionCode, String institutionName, String email, String password, Role authority, Location address) {
+    public Institution(Location location){
+        this.address = location;
+    }
+
+    public Institution(Integer institutionCode, String institutionName, String email, String password, Role authority, Location address) {
         this.institutionCode = institutionCode;
         this.institutionName = institutionName;
         this.email = email;
@@ -58,11 +62,11 @@ public class Institution implements UserDetails {
     }
 
 
-    public int getInstitutionCode() {
+    public Integer getInstitutionCode() {
         return institutionCode;
     }
 
-    public void setInstitutionCode(int institutionCode) {
+    public void setInstitutionCode(Integer institutionCode) {
         this.institutionCode = institutionCode;
     }
 
@@ -125,7 +129,7 @@ public class Institution implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
@@ -153,8 +157,4 @@ public class Institution implements UserDetails {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return address.getInstitutionAddress() + ",\n" + address.getDistrict() + ",\n" + address.getState()+".";
-    }
 }

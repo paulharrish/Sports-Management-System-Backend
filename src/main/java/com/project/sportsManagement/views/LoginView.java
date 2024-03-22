@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Route("login")
 @AnonymousAllowed
-@CssImport(value = "styles.css")
 public class LoginView extends Div implements BeforeEnterObserver {
 
     @Autowired

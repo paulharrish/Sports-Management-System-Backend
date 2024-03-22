@@ -8,6 +8,7 @@ import com.project.sportsManagement.responseclasses.ParticipationDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,7 +43,13 @@ public class EventService {
     }
 
     public List<Event> getParticipatedEvents(Student student){
-        return eventRepository.getParticipatedEvents(student);
+        Set<Participation> participations = student.getParticipation();
+        List<Event> participatedevents = new ArrayList<>();
+        for (Participation participation  : participations){
+            Event participatedevent = participation.getGameCode().getEventId();
+            participatedevents.add(participatedevent);
+        }
+        return participatedevents;
     }
 
     public Event getEventById(int eventId){

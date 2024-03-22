@@ -16,6 +16,8 @@ public class LocationField extends CustomField<Location> {
 
     public LocationField() {
         institutionAddress.setWidth("100%");
+        district.setWidth("100%");
+        state.setWidth("100%");
         add(institutionAddress,district,state);
         district.getStyle().set("margin-right","25px");
     }

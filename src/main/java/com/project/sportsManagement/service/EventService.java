@@ -1,6 +1,7 @@
 package com.project.sportsManagement.service;
 
 import com.project.sportsManagement.entity.*;
+import com.project.sportsManagement.exception.ParticipationException;
 import com.project.sportsManagement.repo.*;
 import com.project.sportsManagement.responseclasses.ParticipationDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +104,9 @@ public class EventService {
         for(EventGame game : gameList){
             Student studentManaged = studentRepository.findByStudentId(student.getStudentId());
             EventGame eventGameManaged = eventGameRepository.findById(game.getGameCode()).get();
+            if (participationRepository.findByStudentStudentIdAndGameCodeGameCode(studentManaged.getStudentId(),eventGameManaged.getGameCode()).isPresent()){
+                throw new ParticipationException("You have already participated in " + eventGameManaged.getGameId().getGame());
+            }
             Participation participation = new Participation(studentManaged,eventGameManaged);
             participationRepository.saveAndFlush(participation);
         }

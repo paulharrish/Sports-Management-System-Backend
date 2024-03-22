@@ -3,12 +3,14 @@ package com.project.sportsManagement.views;
 import com.project.sportsManagement.entity.Event;
 import com.project.sportsManagement.entity.EventGame;
 import com.project.sportsManagement.entity.Student;
+import com.project.sportsManagement.exception.ParticipationException;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.project.sportsManagement.service.EventService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
@@ -116,8 +118,19 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
                 Button ok = new Button("Ok");
                 ok.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
                 ok.addClickListener(clickEvent -> {
-                    eventService.participateInAEvent(getCurrentUser(),comboBox.getSelectedItems());
-                    participationDialogue.close();
+                    try{
+                        eventService.participateInAEvent(getCurrentUser(),comboBox.getSelectedItems());
+                        participationDialogue.close();
+                    }catch (ParticipationException exception){
+                        ConfirmDialog confirmDialog = new ConfirmDialog();
+                        confirmDialog.setHeader("Already Participated");
+                        confirmDialog.setText(exception.getMessage());
+                        confirmDialog.setConfirmText("Ok");
+                        confirmDialog.open();
+                        confirmDialog.addConfirmListener(confirmEvent -> confirmDialog.close());
+                    }
+
+
                 });
                 hl.add(comboBox,ok);
                 vl.add(headerText,hl);

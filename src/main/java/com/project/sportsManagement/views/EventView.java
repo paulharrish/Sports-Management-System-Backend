@@ -2,7 +2,12 @@ package com.project.sportsManagement.views;
 
 import com.project.sportsManagement.entity.Event;
 import com.project.sportsManagement.entity.EventGame;
+import com.project.sportsManagement.entity.Game;
 import com.project.sportsManagement.service.EventService;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -13,6 +18,9 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @PermitAll
@@ -74,7 +82,33 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
             //participants section
             Span totalParticipantsText = new Span("Total no of participants: " + eventService.getTotalNoOfEventParticipants(event));
 
-            add(eventName,descriptionBox,gamesBox,gamesGrid,totalParticipantsText);
+
+            //Buttons Section
+            HorizontalLayout bl = new HorizontalLayout();
+            Button participateBtn = new Button("Participate in this Event");
+            participateBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY,ButtonVariant.LUMO_SUCCESS);
+            bl.add(participateBtn);
+
+
+            //click listener for participating button
+            participateBtn.addClickListener(click -> {
+                Dialog participationDialogue = new Dialog();
+                VerticalLayout vl = new VerticalLayout();
+                Span headerText = new Span("Select the games you wish to participate:");
+                HorizontalLayout hl = new HorizontalLayout();
+
+                MultiSelectComboBox<Game> comboBox= new MultiSelectComboBox<>();
+                comboBox.setItems(eventService.getGamesInAEvent(event));
+                comboBox.setItemLabelGenerator(Game::getGame);
+                Button ok = new Button("Ok");
+                ok.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+                hl.add(comboBox,ok);
+                vl.add(headerText,hl);
+                participationDialogue.add(vl);
+                participationDialogue.open();
+            });
+
+            add(eventName,descriptionBox,gamesBox,gamesGrid,totalParticipantsText,bl);
         }
 
     }

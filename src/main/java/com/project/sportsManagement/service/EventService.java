@@ -83,4 +83,14 @@ public class EventService {
         }
         return noOfParticipants;
     }
+
+
+    public  List<Game> getGamesInAEvent(Event event){
+        Set<EventGame> eventGames = event.getGames();
+        List<Game> games = new ArrayList<>();
+        for (EventGame eventGame: eventGames){
+                games.add(eventGame.getGameId());
+        }
+        return games;
+    }
 }

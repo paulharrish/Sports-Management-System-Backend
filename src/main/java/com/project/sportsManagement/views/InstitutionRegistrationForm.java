@@ -2,15 +2,12 @@ package com.project.sportsManagement.views;
 
 import com.project.sportsManagement.entity.Institution;
 import com.project.sportsManagement.entity.Location;
-import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.repo.InstitutionRepository;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -39,7 +36,7 @@ Button close = new Button("Cancel");
 
 Binder<Institution> binder = new Binder<>(Institution.class);
 
-private Institution institution;
+private final Institution institution;
 
 private final InstitutionRepository institutionRepository;
 
@@ -74,7 +71,7 @@ private final AuthenticationService authenticationService;
             institutionName.clear();
             email.clear();
             password.clear();
-            address.clear();
+            address.setPresentationValue(new Location("","",""));
         });
 
         close.addClickListener(click -> {

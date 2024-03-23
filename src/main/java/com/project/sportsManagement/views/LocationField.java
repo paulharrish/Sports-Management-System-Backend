@@ -1,17 +1,15 @@
 package com.project.sportsManagement.views;
 
 import com.project.sportsManagement.entity.Location;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.customfield.CustomField;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 
 public class LocationField extends CustomField<Location> {
 
-    private TextArea institutionAddress = new TextArea("Institution Address");
-    private TextField district = new TextField("District");
-    private TextField state = new TextField("State");
+    private final TextArea institutionAddress = new TextArea("Institution Address");
+    private final TextField district = new TextField("District");
+    private final TextField state = new TextField("State");
 
 
     public LocationField() {

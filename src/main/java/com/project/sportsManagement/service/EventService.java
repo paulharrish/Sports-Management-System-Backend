@@ -49,14 +49,6 @@ public class EventService {
     }
 
     public List<Event> getParticipatedEvents(Student student){
-//        Set<Participation> participations = student.getParticipation();
-//        List<Event> participatedevents = new ArrayList<>();
-//        for (Participation participation  : participations){
-//            Event participatedevent = participation.getGameCode().getEventId();
-//            participatedevents.add(participatedevent);
-//        }
-
-        //these lines are commented out because live changes in db is not reflecting here. so everytime fetching the records from db using query method.
         return eventRepository.getParticipatedEvents(student);
     }
 
@@ -110,5 +102,18 @@ public class EventService {
             Participation participation = new Participation(studentManaged,eventGameManaged);
             participationRepository.saveAndFlush(participation);
         }
+    }
+
+
+    public void deleteEvent(Event event){
+        List<Participation> allParticipation = participationRepository.findAll();
+        Set<EventGame> games = event.getGames();
+        for (Participation participation : allParticipation){
+            if (games.contains(participation.getGameCode())){
+                participationRepository.delete(participation);
+            }
+        }
+        event.getGames().clear();
+        eventRepository.delete(event);
     }
 }

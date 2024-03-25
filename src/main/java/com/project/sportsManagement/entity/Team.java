@@ -24,6 +24,13 @@ public class Team {
     @JoinColumn(name = "created_by",referencedColumnName = "student_id")
     private Student creator;
 
+    @OneToMany(mappedBy = "team",fetch = FetchType.EAGER)
+    private Set<Participation> participations;
+
+
+    public Team() {
+    }
+
     public Team(String teamName, Institution teamInstitution, Set<Student> teamMembers, Student creator) {
         this.teamName = teamName;
         this.teamInstitution = teamInstitution;

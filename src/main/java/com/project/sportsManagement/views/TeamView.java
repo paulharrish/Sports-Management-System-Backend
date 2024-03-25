@@ -2,6 +2,8 @@ package com.project.sportsManagement.views;
 
 import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.entity.Team;
+import com.project.sportsManagement.repo.InstitutionRepository;
+import com.project.sportsManagement.repo.StudentRepository;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -20,35 +22,40 @@ import java.awt.*;
 @PermitAll
 public class TeamView extends VerticalLayout {
 
-    H2 headerText = new H2("Currently, You don't have any teams.");
-
-    H2 createdteamsHeading = new H2("The teams you have created");
-
     H2 teamsHeading = new H2("The teams you are currently in");
     Button create = new Button("Create a team");
-
-    Grid<Team> createdTeams = new Grid<>(Team.class);
     Grid<Team> teams = new Grid<>(Team.class);
+
+    VerticalLayout content = new VerticalLayout();
 
     private AuthenticationService authenticationService;
 
-    public TeamView(@Autowired AuthenticationService authenticationService) {
+    private InstitutionRepository institutionRepository;
+
+    private StudentRepository studentRepository;
+
+    public TeamView(@Autowired AuthenticationService authenticationService,@Autowired InstitutionRepository institutionRepository, @Autowired StudentRepository studentRepository) {
         this.authenticationService = authenticationService;
+        this.institutionRepository = institutionRepository;
+        this.studentRepository = studentRepository;
+        configureTeamsGrid();
+        content.add(teamsHeading,teams);
+        add(create,content);
 
         create.addClickListener(click -> {
-
+            remove(content);
+            add(new TeamRegistrationForm(institutionRepository,studentRepository));
         });
 
-        configureTeamsGrid();
-        configureCreatedTeamsGrid();
-        add(create,teamsHeading,teams,createdteamsHeading,createdTeams);
-
     }
 
-    private void configureCreatedTeamsGrid() {
-    }
+
 
     private void configureTeamsGrid() {
+        teams.setColumns("teamId","teamName");
+        teams.addColumn(Team::getCreator).setHeader("Created By");
+        teams.addColumn(team -> team.getTeamInstitution()).setHeader("Institution");
+        teams.setItems(getCurrentUser().getTeams());
     }
 
     private Student getCurrentUser() {

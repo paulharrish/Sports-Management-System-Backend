@@ -14,6 +14,8 @@ public class Game {
     private String game;
     @OneToMany(mappedBy = "gameId",cascade = CascadeType.ALL)
     private Set<EventGame> events;
+    @Column(name = "")
+    private boolean isSoloParticipationAllowed;
 
     public Game() {
     }
@@ -37,5 +39,13 @@ public class Game {
 
     public void setGame(String game) {
         this.game = game;
+    }
+
+    public boolean isSoloParticipationAllowed() {
+        return isSoloParticipationAllowed;
+    }
+
+    public void setSoloParticipationAllowed(boolean soloParticipationAllowed) {
+        isSoloParticipationAllowed = soloParticipationAllowed;
     }
 }

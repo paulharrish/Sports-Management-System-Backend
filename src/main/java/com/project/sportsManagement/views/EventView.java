@@ -119,11 +119,11 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
                 ok.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
                 ok.addClickListener(clickEvent -> {
                     try{
-                        eventService.participateInAEvent(getCurrentUser(),comboBox.getSelectedItems());
+                        eventService.participateInASoloEvent(getCurrentUser(),comboBox.getSelectedItems());
                         participationDialogue.close();
                     }catch (ParticipationException exception){
                         ConfirmDialog confirmDialog = new ConfirmDialog();
-                        confirmDialog.setHeader("Already Participated");
+                        confirmDialog.setHeader("Error");
                         confirmDialog.setText(exception.getMessage());
                         confirmDialog.setConfirmText("Ok");
                         confirmDialog.open();

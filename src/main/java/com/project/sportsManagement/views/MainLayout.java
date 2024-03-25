@@ -1,5 +1,6 @@
 package com.project.sportsManagement.views;
 
+import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -35,6 +36,10 @@ public class MainLayout extends AppLayout {
                 new SideNavItem("Profile", "profile", VaadinIcon.USER.create()),
                 new SideNavItem("My Events","my-events",VaadinIcon.PLAY.create())
         );
+        if (authenticationService.getAuthenticatedUser() instanceof Student){
+            nav.addItem(new SideNavItem("Team","team",VaadinIcon.GROUP.create()));
+        }
+
         nav.getItems().forEach(sideNavItem -> sideNavItem.getStyle().set("margin","10px"));
 
 

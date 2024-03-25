@@ -2,9 +2,11 @@ package com.project.sportsManagement.service;
 
 import com.project.sportsManagement.entity.Institution;
 import com.project.sportsManagement.entity.Student;
+import com.project.sportsManagement.entity.Team;
 import com.project.sportsManagement.exception.UserNotFoundException;
 import com.project.sportsManagement.repo.InstitutionRepository;
 import com.project.sportsManagement.repo.StudentRepository;
+import com.project.sportsManagement.repo.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +25,9 @@ public class UserService implements UserDetailsService {
     private StudentRepository studentRepository;
     @Autowired
     private InstitutionRepository institutionRepository;
+
+    @Autowired
+    private TeamRepository teamRepository;
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
        Optional<Student> student = studentRepository.findByEmail(email);
@@ -53,5 +58,15 @@ public class UserService implements UserDetailsService {
 
     public List<Institution> getAllInstitution() {
        return institutionRepository.findAll();
+    }
+
+
+    public void addStudentInTeam(Student student, Team team){
+        team.getTeamMembers().add(student);
+    }
+
+    public void createATeam(Team team,Student student){
+        team.setCreator(student);
+        teamRepository.save(team);
     }
 }

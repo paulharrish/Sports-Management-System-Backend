@@ -69,9 +69,7 @@ public class EventService {
                 }).collect(Collectors.toList());
     }
 
-    List<Student> getEventParticipants(int eventId){
-        return eventRepository.getEventParticipants(eventId);
-    }
+
 
     public int getTotalNoOfEventParticipants(Event event){
         int noOfParticipants = 0;
@@ -92,15 +90,22 @@ public class EventService {
         return games;
     }
     @Transactional
-    public void participateInAEvent(Student student,Set<EventGame> gameList){
+    public void participateInASoloEvent(Student student, Set<EventGame> gameList){
         for(EventGame game : gameList){
-            Student studentManaged = studentRepository.findByStudentId(student.getStudentId());
-            EventGame eventGameManaged = eventGameRepository.findById(game.getGameCode()).get();
-            if (participationRepository.findByStudentStudentIdAndGameCodeGameCode(studentManaged.getStudentId(),eventGameManaged.getGameCode()).isPresent()){
-                throw new ParticipationException("You have already participated in " + eventGameManaged.getGameId().getGame());
+            if (game.getGameId().isSoloParticipationAllowed()){
+                Student studentManaged = studentRepository.findByStudentId(student.getStudentId());
+                EventGame eventGameManaged = eventGameRepository.findById(game.getGameCode()).get();
+                if (participationRepository.findByStudentStudentIdAndGameCodeGameCode(studentManaged.getStudentId(),eventGameManaged.getGameCode()).isPresent()){
+                    throw new ParticipationException("You have already participated in " + eventGameManaged.getGameId().getGame());
+                }
+                Participation participation = new Participation(studentManaged,eventGameManaged);
+                participationRepository.saveAndFlush(participation);
+
             }
-            Participation participation = new Participation(studentManaged,eventGameManaged);
-            participationRepository.saveAndFlush(participation);
+            else {
+                throw new ParticipationException("One of the games you have selected requires Team participation.Create a team or participate with existing team");
+            }
+
         }
     }
 

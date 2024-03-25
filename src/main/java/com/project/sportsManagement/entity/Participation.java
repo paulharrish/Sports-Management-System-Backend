@@ -17,6 +17,11 @@ public class Participation {
     @JoinColumn(name = "game_code",referencedColumnName = "game_code")
     private EventGame gameCode;
 
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "team_id",referencedColumnName = "team_id")
+    private Team team;
+
     public Participation() {
     }
 
@@ -47,5 +52,13 @@ public class Participation {
 
     public void setGameCode(EventGame gameCode) {
         this.gameCode = gameCode;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }

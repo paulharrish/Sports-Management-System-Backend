@@ -26,6 +26,8 @@ import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 @PermitAll
 @Route(value = "event",layout = MainLayout.class)
@@ -93,14 +95,16 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
             //Buttons Section
             HorizontalLayout bl = new HorizontalLayout();
             Button participateBtn = new Button("Participate in this Event");
+            Button TeamparticipateBtn = new Button("participate as a team");
             participateBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY,ButtonVariant.LUMO_SUCCESS);
+            TeamparticipateBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY,ButtonVariant.LUMO_SUCCESS);
             Button back = new Button("Back");
             back.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             back.addClickListener(click -> {
                 UI.getCurrent().navigate("");
             });
             if (event.getStartTime().toInstant().isAfter(Instant.now())){
-                bl.add(participateBtn,back);
+                bl.add(participateBtn,TeamparticipateBtn,back);
             }else {
                 bl.add(back);
             }
@@ -119,11 +123,11 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
                 ok.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
                 ok.addClickListener(clickEvent -> {
                     try{
-                        eventService.participateInAEvent(getCurrentUser(),comboBox.getSelectedItems());
+                        eventService.participateInASoloEvent(getCurrentUser(),comboBox.getSelectedItems());
                         participationDialogue.close();
                     }catch (ParticipationException exception){
                         ConfirmDialog confirmDialog = new ConfirmDialog();
-                        confirmDialog.setHeader("Already Participated");
+                        confirmDialog.setHeader("Error");
                         confirmDialog.setText(exception.getMessage());
                         confirmDialog.setConfirmText("Ok");
                         confirmDialog.open();
@@ -137,6 +141,39 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
                 participationDialogue.add(vl);
                 participationDialogue.open();
             });
+
+
+            //click listener for team participation button
+            TeamparticipateBtn.addClickListener(click -> {
+                Dialog participationDialogue = new Dialog();
+                VerticalLayout vl = new VerticalLayout();
+                Span headerText = new Span("Select the games you wish to participate:");
+                HorizontalLayout hl = new HorizontalLayout();
+
+                MultiSelectComboBox<EventGame> comboBox= new MultiSelectComboBox<>();
+                Set<EventGame> teamGames = new HashSet<>();
+                for (EventGame gamesinEvent : event.getGames()){
+                    if (!gamesinEvent.getGameId().isSoloParticipationAllowed()){
+                        teamGames.add(gamesinEvent);
+                    }
+                }
+                comboBox.setItems(teamGames);
+                comboBox.setItemLabelGenerator(eventGame -> eventGame.getGameId().getGame());
+                Button ok = new Button("Ok");
+                ok.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+                ok.addClickListener(clickEvent -> {
+
+                });
+                hl.add(comboBox,ok);
+                vl.add(headerText,hl);
+                participationDialogue.add(vl);
+                participationDialogue.open();
+
+            });
+
+
+
+
 
             add(eventName,descriptionBox,gamesBox,gamesGrid,totalParticipantsText,bl);
         }

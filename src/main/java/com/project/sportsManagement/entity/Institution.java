@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Set;
+
 @Entity
 @Table(name = "institution")
 public class Institution implements UserDetails {
@@ -34,6 +36,10 @@ public class Institution implements UserDetails {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id",referencedColumnName = "location_id")
     private Location address;
+
+
+    @OneToMany(mappedBy = "institution",fetch = FetchType.EAGER)
+    private Set<Student> students;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -157,4 +163,11 @@ public class Institution implements UserDetails {
         return true;
     }
 
+    public Set<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(Set<Student> students) {
+        this.students = students;
+    }
 }

@@ -63,7 +63,7 @@ public class Student implements UserDetails {
     @JsonIgnore
     private String password;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "institution_code",referencedColumnName = "institution_code")
     private Institution institution;
 
@@ -73,6 +73,20 @@ public class Student implements UserDetails {
 
     @OneToMany(mappedBy = "student",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<Participation> participation;
+
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "student_team",
+            joinColumns = @JoinColumn(name = "student_id",referencedColumnName = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "team_id",referencedColumnName = "team_id")
+    )
+    public Set<Team> teams;
+
+
+    @OneToMany(mappedBy = "creator",fetch = FetchType.EAGER)
+    private Set<Team> createdTeams;
+
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -87,7 +101,7 @@ public class Student implements UserDetails {
         super();
     }
 
-    public Student(String firstName, String lastName, String rollNo, String email, String password, Institution institution, Role authority) {
+    public Student(String firstName, String lastName, String rollNo, String email, String password, Institution institution, Role authority,Set<Team> teams,Set<Team> createdTeams) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.rollNo = rollNo;
@@ -98,6 +112,8 @@ public class Student implements UserDetails {
         this.createdAt = new Date();
         this.updatedAt = new Date();
         this.participation = new HashSet<>();
+        this.teams = teams;
+        this.createdTeams = createdTeams;
     }
 
     public int getStudentId() {
@@ -178,5 +194,21 @@ public class Student implements UserDetails {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Set<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(Set<Team> teams) {
+        this.teams = teams;
+    }
+
+    public Set<Team> getCreatedTeams() {
+        return createdTeams;
+    }
+
+    public void setCreatedTeams(Set<Team> createdTeams) {
+        this.createdTeams = createdTeams;
     }
 }

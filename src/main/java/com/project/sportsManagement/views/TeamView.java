@@ -5,6 +5,7 @@ import com.project.sportsManagement.entity.Team;
 import com.project.sportsManagement.repo.InstitutionRepository;
 import com.project.sportsManagement.repo.StudentRepository;
 import com.project.sportsManagement.service.AuthenticationService;
+import com.project.sportsManagement.service.UserService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -34,17 +35,20 @@ public class TeamView extends VerticalLayout {
 
     private StudentRepository studentRepository;
 
-    public TeamView(@Autowired AuthenticationService authenticationService,@Autowired InstitutionRepository institutionRepository, @Autowired StudentRepository studentRepository) {
+    private UserService userService;
+
+    public TeamView(@Autowired AuthenticationService authenticationService,@Autowired InstitutionRepository institutionRepository, @Autowired StudentRepository studentRepository, @Autowired UserService userService) {
         this.authenticationService = authenticationService;
         this.institutionRepository = institutionRepository;
         this.studentRepository = studentRepository;
+        this.userService = userService;
         configureTeamsGrid();
         content.add(teamsHeading,teams);
         add(create,content);
 
         create.addClickListener(click -> {
             remove(content);
-            TeamRegistrationForm teamRegistrationForm = new TeamRegistrationForm(institutionRepository,studentRepository,authenticationService);
+            TeamRegistrationForm teamRegistrationForm = new TeamRegistrationForm(institutionRepository,studentRepository,authenticationService,userService);
             add(teamRegistrationForm);
             teamRegistrationForm.setWidth("300px");
 
@@ -56,8 +60,8 @@ public class TeamView extends VerticalLayout {
 
     private void configureTeamsGrid() {
         teams.setColumns("teamId","teamName");
-        teams.addColumn(Team::getCreator).setHeader("Created By");
-        teams.addColumn(team -> team.getTeamInstitution()).setHeader("Institution");
+        teams.addColumn(team -> team.getCreator().getFirstName() + "" + team.getCreator().getLastName()).setHeader("Created By");
+        teams.addColumn(team -> team.getTeamInstitution().getInstitutionName()).setHeader("Institution");
         teams.setItems(getCurrentUser().getTeams());
     }
 

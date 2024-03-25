@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -25,6 +26,8 @@ public class UserService implements UserDetailsService {
     private StudentRepository studentRepository;
     @Autowired
     private InstitutionRepository institutionRepository;
+
+
 
     @Autowired
     private TeamRepository teamRepository;
@@ -65,8 +68,17 @@ public class UserService implements UserDetailsService {
         team.getTeamMembers().add(student);
     }
 
-    public void createATeam(Team team,Student student){
+    public void createATeam(Team team, Student student, Set<Student> teamMembers){
         team.setCreator(student);
-        teamRepository.save(team);
+        teamRepository.saveAndFlush(team);
+        student.getTeams().add(team);
+
+        studentRepository.saveAndFlush(student);// saving the student enitity
+
+
+        for (Student teamMember : teamMembers){
+            teamMember.getTeams().add(team);
+            studentRepository.saveAndFlush(teamMember);
+        }
     }
 }

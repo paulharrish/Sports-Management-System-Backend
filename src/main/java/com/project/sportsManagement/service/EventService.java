@@ -77,9 +77,7 @@ public class EventService {
                 }).collect(Collectors.toList());
     }
 
-    List<Student> getEventParticipants(int eventId){
-        return eventRepository.getEventParticipants(eventId);
-    }
+
 
     public int getTotalNoOfEventParticipants(Event event){
         int noOfParticipants = 0;

@@ -19,7 +19,7 @@ public class Team {
     @ManyToOne(fetch = FetchType.EAGER)
     private Institution teamInstitution;
     @ManyToMany(mappedBy = "teams",fetch = FetchType.EAGER)
-    private Set<Student> teamMembers;
+    public Set<Student> teamMembers;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by",referencedColumnName = "student_id")
     private Student creator;
@@ -29,6 +29,7 @@ public class Team {
 
 
     public Team() {
+        this.teamMembers = new HashSet<>();
     }
 
     public Team(String teamName, Institution teamInstitution, Set<Student> teamMembers, Student creator) {

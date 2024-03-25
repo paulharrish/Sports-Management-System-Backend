@@ -78,10 +78,10 @@ public class Student implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "student_team",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "team_id")
+            joinColumns = @JoinColumn(name = "student_id",referencedColumnName = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "team_id",referencedColumnName = "team_id")
     )
-    private  Set<Team> teams;
+    public Set<Team> teams;
 
 
     @OneToMany(mappedBy = "creator",fetch = FetchType.EAGER)
@@ -112,8 +112,8 @@ public class Student implements UserDetails {
         this.createdAt = new Date();
         this.updatedAt = new Date();
         this.participation = new HashSet<>();
-        this.teams = new HashSet<>();
-        this.createdTeams = new HashSet<>();
+        this.teams = teams;
+        this.createdTeams = createdTeams;
     }
 
     public int getStudentId() {

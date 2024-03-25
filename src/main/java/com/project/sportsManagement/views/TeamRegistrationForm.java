@@ -7,6 +7,7 @@ import com.project.sportsManagement.repo.InstitutionRepository;
 import com.project.sportsManagement.repo.StudentRepository;
 import com.project.sportsManagement.repo.TeamRepository;
 import com.project.sportsManagement.service.AuthenticationService;
+import com.project.sportsManagement.service.UserService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -19,6 +20,8 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TeamRegistrationForm extends FormLayout {
 
@@ -39,7 +42,7 @@ public class TeamRegistrationForm extends FormLayout {
     private Team team;
 
 
-    public TeamRegistrationForm(InstitutionRepository institutionRepository, StudentRepository studentRepository , AuthenticationService auth) {
+    public TeamRegistrationForm(InstitutionRepository institutionRepository, StudentRepository studentRepository , AuthenticationService auth, UserService userService) {
         this.team = new Team();
 
 
@@ -47,7 +50,16 @@ public class TeamRegistrationForm extends FormLayout {
         teamInstitution.setItems(currentStudent.getInstitution());
         teamInstitution.setItemLabelGenerator(Institution::getInstitutionName);
 
-        teamMembers.setItems(currentStudent.getInstitution().getStudents());
+        Set<Student> students = currentStudent.getInstitution().getStudents();
+        Set<Student> teamMembersList = new HashSet<>();
+        for (Student student: students){
+            if (currentStudent.equals(student)) {
+                continue;
+            }
+            teamMembersList.add(student);
+        }
+
+        teamMembers.setItems(teamMembersList);
         teamMembers.setItemLabelGenerator(student -> student.getFirstName()+ " "+student.getLastName());
 
 
@@ -61,9 +73,15 @@ public class TeamRegistrationForm extends FormLayout {
 
         binder.forField(teamName).asRequired("Team name cannot be Empty").bind(Team::getTeamName,Team::setTeamName);
         binder.forField(teamInstitution).bind(Team::getTeamInstitution,Team::setTeamInstitution);
-        binder.forField(teamMembers).bind(Team::getTeamMembers,Team::setTeamMembers);
+
 
         binder.setBean(team);
+
+        create.addClickListener(clickEvent -> {
+            if (binder.isValid()){
+                userService.createATeam(team,currentStudent,teamMembers.getValue());
+            }
+        });
 
         add(teamName,teamInstitution,teamMembers,buttonLayout);
 

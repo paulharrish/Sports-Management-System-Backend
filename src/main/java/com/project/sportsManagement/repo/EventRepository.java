@@ -33,7 +33,7 @@ public interface EventRepository extends JpaRepository<Event,Integer> {
             "join EventGame eg on p.gameCode = eg "+
             "join Event e on eg.eventId = e "+
             "where e.eventId = :eventId")
-    List<Student> getEventParticipants(int eventId);
+    List<Student> getSoloParticipantsInAEvent(int eventId);
 
 
 

@@ -44,7 +44,10 @@ public class TeamView extends VerticalLayout {
 
         create.addClickListener(click -> {
             remove(content);
-            add(new TeamRegistrationForm(institutionRepository,studentRepository));
+            TeamRegistrationForm teamRegistrationForm = new TeamRegistrationForm(institutionRepository,studentRepository,authenticationService);
+            add(teamRegistrationForm);
+            teamRegistrationForm.setWidth("300px");
+
         });
 
     }

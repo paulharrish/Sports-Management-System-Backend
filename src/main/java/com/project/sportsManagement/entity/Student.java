@@ -63,7 +63,7 @@ public class Student implements UserDetails {
     @JsonIgnore
     private String password;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "institution_code",referencedColumnName = "institution_code")
     private Institution institution;
 

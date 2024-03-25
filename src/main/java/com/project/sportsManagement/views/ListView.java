@@ -7,6 +7,7 @@ import com.project.sportsManagement.service.AuthenticationService;
 import com.project.sportsManagement.service.EventService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -97,7 +98,6 @@ public class ListView extends VerticalLayout implements BeforeEnterObserver {
 
     private void configureGrid() {
         eventGrid.addClassName("event-grid");
-        eventGrid.setSizeFull();
         eventGrid.setColumns("eventId","eventName");
         eventGrid.addColumn(event -> event.getHost().getInstitutionName()).setHeader("Host");
         eventGrid.addColumn(event -> event.getLevel().getLevel()).setHeader("Level");
@@ -113,6 +113,8 @@ public class ListView extends VerticalLayout implements BeforeEnterObserver {
             }
             return statusBadge;
         })).setHeader("Status").setAutoWidth(true);
+        eventGrid.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS,GridVariant.LUMO_ROW_STRIPES);
+        eventGrid.setAllRowsVisible(true);
         eventGrid.getColumns().forEach(column -> column.setAutoWidth(true));
         eventGrid.asSingleSelect().addValueChangeListener(e -> {
             getUI().ifPresent(ui -> ui.navigate("event/" + e.getValue().getEventId()));

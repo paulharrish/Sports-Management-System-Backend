@@ -11,4 +11,6 @@ public interface ParticipationRepository extends JpaRepository<Participation,Int
     List<Participation> findAllByStudent(Student student);
 
     Optional<Participation> findByStudentStudentIdAndGameCodeGameCode(int studentId, int gameCode);
+
+    Optional<Participation> findByTeamTeamIdAndGameCodeGameCode(int teamId, int gameCode);
 }

@@ -3,20 +3,19 @@ package com.project.sportsManagement.views;
 import com.project.sportsManagement.entity.Event;
 import com.project.sportsManagement.entity.EventGame;
 import com.project.sportsManagement.entity.Student;
+import com.project.sportsManagement.entity.Team;
 import com.project.sportsManagement.exception.ParticipationException;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.project.sportsManagement.service.EventService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEvent;
@@ -25,6 +24,7 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
@@ -90,6 +90,29 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
 
             //participants section
             Span totalParticipantsText = new Span("Total no of participants: " + eventService.getTotalNoOfEventParticipants(event));
+
+
+            //host section
+            HorizontalLayout hostLayout = new HorizontalLayout();
+            H4 hostHeading = new H4("Hosted by :  ");
+            Paragraph venue = new Paragraph(event.getHost().getInstitutionName());
+            hostLayout.add(hostHeading,venue);
+            hostLayout.setPadding(false);
+            hostLayout.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
+
+
+            //address section
+            VerticalLayout addressLayout = new VerticalLayout();
+            H4 addressheading = new H4("Address:");
+            Paragraph address = new Paragraph(event.getHost().getAddress().getInstitutionAddress()+",");
+            Paragraph district = new Paragraph(event.getHost().getAddress().getDistrict()+",");
+            Paragraph state = new Paragraph(event.getHost().getAddress().getState()+".");
+            addressLayout.add(addressheading,address,district,state);
+            addressLayout.setPadding(false);
+            addressLayout.getStyle().setLineHeight("0px");
+
+
+
 
 
             //Buttons Section
@@ -161,9 +184,40 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
                 comboBox.setItemLabelGenerator(eventGame -> eventGame.getGameId().getGame());
                 Button ok = new Button("Ok");
                 ok.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+
+                Dialog teamSelectDialog = new Dialog("Select the team");
+                HorizontalLayout hLayout = new HorizontalLayout();
+                ComboBox<Team> teamComboBox = new ComboBox<>("Select a team from you team list:");
+                teamComboBox.setItems(getCurrentUser().getTeams());
+                teamComboBox.setItemLabelGenerator(Team::getTeamName);
+                Button okbtn = new Button("Ok");
+                hLayout.add(teamComboBox,okbtn);
+                hLayout.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
+                teamSelectDialog.add(hLayout);
+
+
                 ok.addClickListener(clickEvent -> {
+                    participationDialogue.close();
+                    teamSelectDialog.open();
+                });
+
+
+                okbtn.addClickListener(clickEvent -> {
+                    try {
+                        eventService.participateAsTeam(teamComboBox.getValue(),comboBox.getSelectedItems());
+                        teamSelectDialog.close();
+                    }catch (ParticipationException e){
+                        ConfirmDialog confirmDialog = new ConfirmDialog();
+                        confirmDialog.setHeader("Error");
+                        confirmDialog.setText(e.getMessage());
+                        confirmDialog.setConfirmText("Ok");
+                        confirmDialog.open();
+                        confirmDialog.addConfirmListener(confirmEvent -> confirmDialog.close());
+                    }
 
                 });
+
                 hl.add(comboBox,ok);
                 vl.add(headerText,hl);
                 participationDialogue.add(vl);
@@ -175,9 +229,18 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
 
 
 
-            add(eventName,descriptionBox,gamesBox,gamesGrid,totalParticipantsText,bl);
+            add(eventName,descriptionBox,gamesBox,gamesGrid,totalParticipantsText,hostLayout,addressLayout,bl);
         }
 
+    }
+
+    private String formatDurationText(Duration duration) {
+        long days = duration.toDays();
+        long hours = duration.toHours() % 24;
+        long minutes = duration.toMinutes() % 60;
+        long seconds = duration.toSeconds() % 60;
+
+        return String.format("%d days, %d hours, %d minutes, %d seconds", days, hours, minutes, seconds);
     }
 
     private Student getCurrentUser() {

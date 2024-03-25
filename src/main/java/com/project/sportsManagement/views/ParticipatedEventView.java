@@ -4,8 +4,8 @@ import com.project.sportsManagement.entity.Event;
 import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.project.sportsManagement.service.EventService;
-import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -66,6 +66,7 @@ public class ParticipatedEventView extends VerticalLayout implements BeforeEnter
         })).setHeader("Status").setAutoWidth(true);
         participatedEventsGrid.getColumns().forEach(column -> column.setAutoWidth(true));
         participatedEventsGrid.setHeight("200px");
+        participatedEventsGrid.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS,GridVariant.LUMO_ROW_STRIPES);
         participatedEventsGrid.setItems(eventService.getParticipatedEvents(getCurrentUser()));
 
     }
@@ -81,11 +82,7 @@ public class ParticipatedEventView extends VerticalLayout implements BeforeEnter
         }
     }
 
-    @Override
-    protected void onAttach(AttachEvent attachEvent) {
-        super.onAttach(attachEvent);
-        updateGridItems();
-    }
+
 
     private void updateGridItems() {
         participatedEventsGrid.setItems(eventService.getParticipatedEvents(getCurrentUser()));

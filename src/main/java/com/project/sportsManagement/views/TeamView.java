@@ -6,18 +6,14 @@ import com.project.sportsManagement.repo.InstitutionRepository;
 import com.project.sportsManagement.repo.StudentRepository;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.project.sportsManagement.service.UserService;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.awt.*;
 
 @Route(value = "team",layout = MainLayout.class)
 @PermitAll
@@ -44,6 +40,8 @@ public class TeamView extends VerticalLayout {
         this.userService = userService;
         configureTeamsGrid();
         content.add(teamsHeading,teams);
+        content.setPadding(false);
+
         add(create,content);
 
         create.addClickListener(click -> {
@@ -51,8 +49,13 @@ public class TeamView extends VerticalLayout {
             TeamRegistrationForm teamRegistrationForm = new TeamRegistrationForm(institutionRepository,studentRepository,authenticationService,userService);
             add(teamRegistrationForm);
             teamRegistrationForm.setWidth("300px");
+            teamRegistrationForm.cancel.addClickListener(clickEvent -> {
+                remove(teamRegistrationForm);
+                add(create,content);
+            });
 
         });
+
 
     }
 
@@ -63,6 +66,8 @@ public class TeamView extends VerticalLayout {
         teams.addColumn(team -> team.getCreator().getFirstName() + "" + team.getCreator().getLastName()).setHeader("Created By");
         teams.addColumn(team -> team.getTeamInstitution().getInstitutionName()).setHeader("Institution");
         teams.setItems(getCurrentUser().getTeams());
+        teams.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS,GridVariant.LUMO_ROW_STRIPES);
+        teams.setAllRowsVisible(true);
     }
 
     private Student getCurrentUser() {

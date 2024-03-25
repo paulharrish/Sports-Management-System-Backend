@@ -5,10 +5,8 @@ import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.entity.Team;
 import com.project.sportsManagement.repo.InstitutionRepository;
 import com.project.sportsManagement.repo.StudentRepository;
-import com.project.sportsManagement.repo.TeamRepository;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.project.sportsManagement.service.UserService;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -17,9 +15,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,8 +29,8 @@ public class TeamRegistrationForm extends FormLayout {
     private MultiSelectComboBox<Student> teamMembers = new MultiSelectComboBox<>("Add members");
 
     Button create = new Button("Create");
-    Button delete = new Button("delete");
-    Button cancel = new Button("cancel");
+    Button delete = new Button("Delete");
+    Button cancel = new Button("Cancel");
 
 
     Binder<Team> binder = new Binder<>();
@@ -83,7 +79,13 @@ public class TeamRegistrationForm extends FormLayout {
             }
         });
 
+        delete.addClickListener(clickEvent -> {
+            binder.setBean(new Team());
+        });
+
+
         add(teamName,teamInstitution,teamMembers,buttonLayout);
 
     }
+
 }

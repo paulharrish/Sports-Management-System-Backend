@@ -28,6 +28,13 @@ public class Participation {
     public Participation(Student student, EventGame gameCode) {
         this.student = student;
         this.gameCode = gameCode;
+        this.team = null;
+    }
+
+    public Participation(Team team,EventGame gameCode){
+        this.team = team;
+        this.gameCode = gameCode;
+        this.student = null;
     }
 
     public int getParticipationId() {

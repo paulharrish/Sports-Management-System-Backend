@@ -31,6 +31,9 @@ public class EventService {
     @Autowired
     private StudentRepository studentRepository;
 
+    @Autowired
+    private TeamRepository teamRepository;
+
     public List<Event> filterByName(String filterText){
         if (filterText == null || filterText.isEmpty()){
             return eventRepository.findAll();
@@ -103,11 +106,27 @@ public class EventService {
 
             }
             else {
-                throw new ParticipationException("One of the games you have selected requires Team participation.Create a team or participate with existing team");
+                throw new ParticipationException("One of the games you have selected requires Team participation.Participate as a team by Creating a team or participate with existing team");
             }
 
         }
     }
+    @Transactional
+    public void participateAsTeam(Team team, Set<EventGame> gamesList) {
+        Team teamManaged = teamRepository.findById(team.getTeamId()).get();
+
+        for (EventGame game : gamesList) {
+            EventGame eventGameManaged = eventGameRepository.findById(game.getGameCode()).get();
+
+            if (participationRepository.findByTeamTeamIdAndGameCodeGameCode(teamManaged.getTeamId(), eventGameManaged.getGameCode()).isPresent()) {
+                throw new ParticipationException("You have already participated in " + eventGameManaged.getGameId().getGame());
+            }
+
+            Participation participation = new Participation(teamManaged, eventGameManaged);
+            participationRepository.save(participation);
+        }
+    }
+
 
 
     public void deleteEvent(Event event){

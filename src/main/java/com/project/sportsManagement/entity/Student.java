@@ -75,7 +75,7 @@ public class Student implements UserDetails {
     private Set<Participation> participation;
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(
             name = "student_team",
             joinColumns = @JoinColumn(name = "student_id",referencedColumnName = "student_id"),

@@ -45,13 +45,15 @@ public class TeamView extends VerticalLayout {
         add(create,content);
 
         create.addClickListener(click -> {
-            remove(content);
+            create.setVisible(false);
+            content.setVisible(false);
             TeamRegistrationForm teamRegistrationForm = new TeamRegistrationForm(institutionRepository,studentRepository,authenticationService,userService);
             add(teamRegistrationForm);
             teamRegistrationForm.setWidth("300px");
             teamRegistrationForm.cancel.addClickListener(clickEvent -> {
                 remove(teamRegistrationForm);
-                add(create,content);
+                create.setVisible(true);
+                content.setVisible(true);
             });
 
         });
@@ -65,7 +67,7 @@ public class TeamView extends VerticalLayout {
         teams.setColumns("teamId","teamName");
         teams.addColumn(team -> team.getCreator().getFirstName() + "" + team.getCreator().getLastName()).setHeader("Created By");
         teams.addColumn(team -> team.getTeamInstitution().getInstitutionName()).setHeader("Institution");
-        teams.setItems(getCurrentUser().getTeams());
+        teams.setItems(userService.getAllTeamsOfAUser(getCurrentUser()));
         teams.addThemeVariants(GridVariant.LUMO_COLUMN_BORDERS,GridVariant.LUMO_ROW_STRIPES);
         teams.setAllRowsVisible(true);
     }

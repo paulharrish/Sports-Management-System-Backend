@@ -18,7 +18,7 @@ public class Team {
     @JoinColumn(name = "institution",referencedColumnName = "institution_code")
     @ManyToOne(fetch = FetchType.EAGER)
     private Institution teamInstitution;
-    @ManyToMany(mappedBy = "teams",fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "teams",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     public Set<Student> teamMembers;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by",referencedColumnName = "student_id")

@@ -14,7 +14,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -67,18 +69,33 @@ public class UserService implements UserDetailsService {
     public void addStudentInTeam(Student student, Team team){
         team.getTeamMembers().add(student);
     }
-
+    @Transactional
     public void createATeam(Team team, Student student, Set<Student> teamMembers){
         team.setCreator(student);
         teamRepository.saveAndFlush(team);
-        student.getTeams().add(team);
 
-        studentRepository.saveAndFlush(student);// saving the student enitity
+        Set<Student> teamMembersWithCreator = new HashSet<>();
+        teamMembersWithCreator.add(student);
+        teamMembersWithCreator.addAll(teamMembers);
+
+//        student.getTeams().add(team);
+//        studentRepository.saveAndFlush(student);// saving the student entity
+//        teamRepository.saveAndFlush(team);
+
+          for (Student teamMember : teamMembersWithCreator){
+              teamMember.getTeams().add(team);
+              studentRepository.saveAndFlush(teamMember);
+          }
 
 
-        for (Student teamMember : teamMembers){
-            teamMember.getTeams().add(team);
-            studentRepository.saveAndFlush(teamMember);
-        }
+//        for (Student teamMember : teamMembers){
+//            team.getTeamMembers().add(teamMember);
+//            teamRepository.saveAndFlush(team);
+//        }
+    }
+
+
+    public List<Team> getAllTeamsOfAUser(Student student){
+        return studentRepository.getAllTeams(student);
     }
 }

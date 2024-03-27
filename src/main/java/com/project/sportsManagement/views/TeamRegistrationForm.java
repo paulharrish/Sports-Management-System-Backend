@@ -76,6 +76,11 @@ public class TeamRegistrationForm extends FormLayout {
         create.addClickListener(clickEvent -> {
             if (binder.isValid()){
                 userService.createATeam(team,currentStudent,teamMembers.getValue());
+                this.getParent().get().getElement().getChild(0).setVisible(true);
+                this.getParent().get().getElement().getChild(1).setVisible(true);
+                removeFromParent();
+                binder.setBean(new Team());
+
             }
         });
 

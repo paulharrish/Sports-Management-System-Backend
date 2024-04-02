@@ -1,9 +1,6 @@
 package com.project.sportsManagement.views;
 
-import com.project.sportsManagement.entity.Event;
-import com.project.sportsManagement.entity.EventGame;
-import com.project.sportsManagement.entity.Student;
-import com.project.sportsManagement.entity.Team;
+import com.project.sportsManagement.entity.*;
 import com.project.sportsManagement.exception.ParticipationException;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.project.sportsManagement.service.EventService;
@@ -115,21 +112,21 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
 
 
 
-            //Buttons Section
-            HorizontalLayout bl = new HorizontalLayout();
+            //Buttons Section for Student login
+            HorizontalLayout studentBl = new HorizontalLayout();
             Button participateBtn = new Button("Participate in this Event");
-            Button TeamparticipateBtn = new Button("participate as a team");
+            Button TeamParticipateBtn = new Button("participate as a team");
             participateBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY,ButtonVariant.LUMO_SUCCESS);
-            TeamparticipateBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY,ButtonVariant.LUMO_SUCCESS);
+            TeamParticipateBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY,ButtonVariant.LUMO_SUCCESS);
             Button back = new Button("Back");
             back.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             back.addClickListener(click -> {
                 UI.getCurrent().navigate("");
             });
             if (event.getStartTime().toInstant().isAfter(Instant.now())){
-                bl.add(participateBtn,TeamparticipateBtn,back);
+                studentBl.add(participateBtn,TeamParticipateBtn,back);
             }else {
-                bl.add(back);
+                studentBl.add(back);
             }
 
             //click listener for participating button
@@ -167,7 +164,7 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
 
 
             //click listener for team participation button
-            TeamparticipateBtn.addClickListener(click -> {
+            TeamParticipateBtn.addClickListener(click -> {
                 Dialog participationDialogue = new Dialog();
                 VerticalLayout vl = new VerticalLayout();
                 Span headerText = new Span("Select the games you wish to participate:");
@@ -226,10 +223,26 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
             });
 
 
+            //buttonslayout for institution Login
+            HorizontalLayout institutionBl = new HorizontalLayout();
+            Button editBtn = new Button("Edit");
+            Button viewParticipants = new Button("View Participants");
+            editBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            editBtn.setEnabled(false);
+            viewParticipants.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+            viewParticipants.setEnabled(false);
+            institutionBl.add(editBtn,viewParticipants);
+            if (((Institution)authenticationService.getAuthenticatedUser()).equals(event.getHost())){
+                editBtn.setEnabled(true);
+                viewParticipants.setEnabled(true);
+            }
 
-
-
-            add(eventName,descriptionBox,gamesBox,gamesGrid,totalParticipantsText,hostLayout,addressLayout,bl);
+            //changing the buttons layout based on the user login.
+            if (authenticationService.getAuthenticatedUser() instanceof Student){
+                add(eventName,descriptionBox,gamesBox,gamesGrid,totalParticipantsText,hostLayout,addressLayout,studentBl);
+            }else if (authenticationService.getAuthenticatedUser() instanceof Institution){
+                add(eventName,descriptionBox,gamesBox,gamesGrid,totalParticipantsText,hostLayout,addressLayout,institutionBl);
+            }
         }
 
     }
@@ -246,6 +259,8 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
     private Student getCurrentUser() {
         return (Student)authenticationService.getAuthenticatedUser();
     }
+
+
 
 
 

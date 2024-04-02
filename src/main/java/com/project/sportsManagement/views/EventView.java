@@ -232,7 +232,7 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
             viewParticipants.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             viewParticipants.setEnabled(false);
             institutionBl.add(editBtn,viewParticipants);
-            if (((Institution)authenticationService.getAuthenticatedUser()).equals(event.getHost())){
+            if (authenticationService.getAuthenticatedUser().equals(event.getHost())){
                 editBtn.setEnabled(true);
                 viewParticipants.setEnabled(true);
             }

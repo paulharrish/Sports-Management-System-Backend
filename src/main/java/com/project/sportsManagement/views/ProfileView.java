@@ -18,6 +18,7 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver {
     private UserService userService;
 
     StudentProfileViewForm studentProfileViewForm;
+
     @Autowired
     public ProfileView(AuthenticationService authenticationService,UserService userService) {
         this.authenticationService = authenticationService;
@@ -27,7 +28,6 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver {
             studentProfileViewForm = new StudentProfileViewForm(userService.getAllInstitution(),true,(Student)authenticationService.getAuthenticatedUser(),authenticationService);
             add(studentProfileViewForm);
             studentProfileViewForm.save.setEnabled(false);
-
         }
 
         // calls the method when a user clicks the save button

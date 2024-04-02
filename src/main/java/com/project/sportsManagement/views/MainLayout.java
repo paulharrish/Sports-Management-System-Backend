@@ -1,5 +1,6 @@
 package com.project.sportsManagement.views;
 
+import com.project.sportsManagement.entity.Institution;
 import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -33,11 +34,15 @@ public class MainLayout extends AppLayout {
         SideNav nav = new SideNav();
         nav.addItem(
                 new SideNavItem("Home","",VaadinIcon.HOME.create()),
-                new SideNavItem("Profile", "profile", VaadinIcon.USER.create()),
-                new SideNavItem("My Events","my-events",VaadinIcon.PLAY.create())
+                new SideNavItem("Profile", "profile", VaadinIcon.USER.create())
         );
         if (authenticationService.getAuthenticatedUser() instanceof Student){
             nav.addItem(new SideNavItem("Team","team",VaadinIcon.GROUP.create()));
+            nav.addItem(new SideNavItem("My Events","my-events",VaadinIcon.PLAY.create()));
+        }
+
+        if (authenticationService.getAuthenticatedUser() instanceof Institution){
+
         }
 
         nav.getItems().forEach(sideNavItem -> sideNavItem.getStyle().set("margin","10px"));

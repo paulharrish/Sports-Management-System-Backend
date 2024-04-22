@@ -72,6 +72,16 @@ public class StudentProfileViewForm extends FormLayout {
             save.setEnabled(false);
         });
 
+
+        save.addClickListener(click -> {
+            if (binder.validate().isOk()){
+                authenticationService.modifyStudentDetails(this.student);
+                setReadOnlyMode(true);
+                save.setEnabled(false);
+            }
+
+        });
+
     }
 
 
@@ -83,12 +93,4 @@ public class StudentProfileViewForm extends FormLayout {
         institution.setReadOnly(readOnly);
     }
 
-    public void saveEvent(){
-            if (binder.validate().isOk()){
-                authenticationService.modifyStudentDetails(this.student);
-                setReadOnlyMode(true);
-                save.setEnabled(false);
-            }
-
-    }
 }

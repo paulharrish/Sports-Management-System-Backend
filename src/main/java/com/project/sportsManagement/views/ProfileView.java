@@ -1,5 +1,6 @@
 package com.project.sportsManagement.views;
 
+import com.project.sportsManagement.entity.Institution;
 import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.project.sportsManagement.service.UserService;
@@ -28,11 +29,10 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver {
             add(studentProfileViewForm);
             studentProfileViewForm.save.setEnabled(false);
         }
+        if (authenticationService.getAuthenticatedUser() instanceof Institution){
 
-        // calls the method when a user clicks the save button
-        studentProfileViewForm.save.addClickListener(click -> {
-            studentProfileViewForm.saveEvent();
-        });
+        }
+
 
 
     }

@@ -64,7 +64,7 @@ public class EventService {
     }
 
     List<ParticipationDetails> getParticipationDetailsForStudent(Student student){
-        List<Participation> participations = participationRepository.findAllByStudent(student);
+        List<Participation> participations = participationRepository.findAllByStudent(student.getStudentId());
         return participations.stream()
                 .map(participation -> {
                     ParticipationDetails participationDetails = new ParticipationDetails(participation.getParticipationId(),participation.getGameCode().getEventId().getEventName(),participation.getGameCode().getGameId().getGame());
@@ -119,7 +119,7 @@ public class EventService {
             EventGame eventGameManaged = eventGameRepository.findById(game.getGameCode()).get();
 
             if (participationRepository.findByTeamTeamIdAndGameCodeGameCode(teamManaged.getTeamId(), eventGameManaged.getGameCode()).isPresent()) {
-                throw new ParticipationException("You have already participated in " + eventGameManaged.getGameId().getGame());
+                throw new ParticipationException("This team has already participated " + eventGameManaged.getGameId().getGame());
             }
 
             Participation participation = new Participation(teamManaged, eventGameManaged);

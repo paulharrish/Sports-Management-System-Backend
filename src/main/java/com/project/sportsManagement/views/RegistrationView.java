@@ -1,11 +1,9 @@
 package com.project.sportsManagement.views;
 
-import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.repo.InstitutionRepository;
 import com.project.sportsManagement.repo.StudentRepository;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.project.sportsManagement.service.UserService;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Span;

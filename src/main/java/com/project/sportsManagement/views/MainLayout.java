@@ -38,7 +38,7 @@ public class MainLayout extends AppLayout {
         );
         if (authenticationService.getAuthenticatedUser() instanceof Student){
             nav.addItem(new SideNavItem("Team","team",VaadinIcon.GROUP.create()));
-            nav.addItem(new SideNavItem("My Events","my-events",VaadinIcon.PLAY.create()));
+            nav.addItem(new SideNavItem("Participation Details","my-events",VaadinIcon.PLAY.create()));
         }
 
         if (authenticationService.getAuthenticatedUser() instanceof Institution){

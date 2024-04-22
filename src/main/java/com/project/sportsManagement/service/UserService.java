@@ -1,12 +1,15 @@
 package com.project.sportsManagement.service;
 
 import com.project.sportsManagement.entity.Institution;
+import com.project.sportsManagement.entity.Participation;
 import com.project.sportsManagement.entity.Student;
 import com.project.sportsManagement.entity.Team;
 import com.project.sportsManagement.exception.UserNotFoundException;
 import com.project.sportsManagement.repo.InstitutionRepository;
+import com.project.sportsManagement.repo.ParticipationRepository;
 import com.project.sportsManagement.repo.StudentRepository;
 import com.project.sportsManagement.repo.TeamRepository;
+import jakarta.servlet.http.Part;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,10 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -29,6 +29,8 @@ public class UserService implements UserDetailsService {
     @Autowired
     private InstitutionRepository institutionRepository;
 
+    @Autowired
+    private ParticipationRepository participationRepository;
 
 
     @Autowired
@@ -98,4 +100,28 @@ public class UserService implements UserDetailsService {
     public List<Team> getAllTeamsOfAUser(Student student){
         return studentRepository.getAllTeams(student);
     }
+
+
+    public List<Participation> getSoloParticipationsOfAStudent(int StudentId){
+        List<Participation> allParticipations = participationRepository.findAllByStudent(StudentId);
+        List<Participation> soloParticipations = new ArrayList<>();
+        for (Participation participation : allParticipations){
+            if (participation.getTeam() == null){
+                soloParticipations.add(participation);
+            }
+        }
+        return soloParticipations;
+    }
+
+    public List<Participation> getTeamParticipationsOfAStudent(int StudentId){
+        List<Participation> allParticipations = participationRepository.findAllByStudent(StudentId);
+        List<Participation> teamParticipations = new ArrayList<>();
+        for (Participation participation : allParticipations){
+            if (participation.getTeam() != null){
+                teamParticipations.add(participation);
+            }
+        }
+        return teamParticipations;
+    }
+
 }

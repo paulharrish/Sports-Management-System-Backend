@@ -82,7 +82,7 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
             gamesGrid.addColumn(eventGame -> eventGame.getGameId().getGame()).setHeader("Games");
             gamesGrid.addColumn(eventGame -> eventGame.getParticipation().size()).setHeader("Participants");
             gamesGrid.getColumns().forEach(col -> col.setAutoWidth(true));
-            gamesGrid.setMaxHeight("200px");
+            gamesGrid.setAllRowsVisible(true);
             gamesGrid.setItems(event.getGames());
 
             //participants section

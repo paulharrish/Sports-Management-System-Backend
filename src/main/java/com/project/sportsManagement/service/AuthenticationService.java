@@ -121,4 +121,9 @@ public class AuthenticationService {
         studentRepository.saveAndFlush(student);
 
     }
+
+    public void modifyInstitutionDetails(Institution institution) {
+        institution.setUpdatedAt(new Date());
+        institutionRepository.saveAndFlush(institution);
+    }
 }

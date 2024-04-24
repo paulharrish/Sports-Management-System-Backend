@@ -13,11 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Route(value = "profile",layout = MainLayout.class)
 @PermitAll
-public class ProfileView extends VerticalLayout implements BeforeEnterObserver {
+public class ProfileView extends VerticalLayout {
     private AuthenticationService authenticationService;
     private UserService userService;
 
     StudentProfileViewForm studentProfileViewForm;
+    InstitutionProfileViewForm institutionProfileViewForm;
 
     @Autowired
     public ProfileView(AuthenticationService authenticationService,UserService userService) {
@@ -27,9 +28,10 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver {
             // creating a student profile view form if the current user is a student.
             studentProfileViewForm = new StudentProfileViewForm(userService.getAllInstitution(),true,(Student)authenticationService.getAuthenticatedUser(),authenticationService);
             add(studentProfileViewForm);
-            studentProfileViewForm.save.setEnabled(false);
         }
         if (authenticationService.getAuthenticatedUser() instanceof Institution){
+            institutionProfileViewForm = new InstitutionProfileViewForm(true,(Institution) authenticationService.getAuthenticatedUser(),authenticationService);
+            add(institutionProfileViewForm);
 
         }
 
@@ -38,9 +40,9 @@ public class ProfileView extends VerticalLayout implements BeforeEnterObserver {
     }
 
 
-    @Override
-    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        studentProfileViewForm.setReadOnlyMode(true);
-
-    }
+//    @Override
+//    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
+//        studentProfileViewForm.setReadOnlyMode(true);
+//
+//    }
 }

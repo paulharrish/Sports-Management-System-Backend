@@ -2,6 +2,8 @@ package com.project.sportsManagement.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,7 +21,7 @@ public class Team {
     @ManyToOne(fetch = FetchType.EAGER)
     private Institution teamInstitution;
     @ManyToMany(mappedBy = "teams",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    public Set<Student> teamMembers;
+    public Set<Student> teamMembers = new HashSet<>();
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by",referencedColumnName = "student_id")
     private Student creator;
@@ -29,7 +31,6 @@ public class Team {
 
 
     public Team() {
-        this.teamMembers = new HashSet<>();
     }
 
     public Team(String teamName, Institution teamInstitution, Set<Student> teamMembers, Student creator) {

@@ -31,4 +31,11 @@ public class LocationField extends CustomField<Location> {
         district.setValue(location.getDistrict());
         state.setValue(location.getState());
     }
+
+
+    public void setReadOnlyMode(boolean readOnly){
+        institutionAddress.setReadOnly(readOnly);
+        district.setReadOnly(readOnly);
+        state.setReadOnly(readOnly);
+    }
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -139,5 +140,11 @@ public class EventService {
         }
         event.getGames().clear();
         eventRepository.delete(event);
+    }
+
+    public void createEvent(Event event) {
+        event.setCreatedAt(new Date());
+        event.setUpdatedAt(new Date());
+        eventRepository.saveAndFlush(event);
     }
 }

@@ -53,4 +53,5 @@ public class EventGame {
     public Set<Participation> getParticipation() {
         return participation;
     }
+
 }

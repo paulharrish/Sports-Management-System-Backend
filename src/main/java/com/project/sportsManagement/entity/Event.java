@@ -63,6 +63,12 @@ public class Event {
         this.updatedAt = new Date();
     }
 
+
+    public Event(Institution institution) {
+        this.host = institution;
+        this.location = institution.getAddress();
+    }
+
     public int getEventId() {
         return eventId;
     }

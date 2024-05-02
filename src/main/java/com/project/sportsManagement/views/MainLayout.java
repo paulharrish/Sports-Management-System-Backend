@@ -12,7 +12,6 @@ import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @AnonymousAllowed
 public class MainLayout extends AppLayout {
@@ -42,6 +41,7 @@ public class MainLayout extends AppLayout {
         }
 
         if (authenticationService.getAuthenticatedUser() instanceof Institution){
+            nav.addItem(new SideNavItem("Create","create",VaadinIcon.PENCIL.create()));
 
         }
 

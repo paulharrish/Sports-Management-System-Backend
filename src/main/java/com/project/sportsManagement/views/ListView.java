@@ -26,8 +26,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
 
 @Route(value = "",layout = MainLayout.class)
 @PermitAll
@@ -37,6 +35,7 @@ public class ListView extends VerticalLayout implements BeforeEnterObserver {
     TextField filterByName = new TextField();
     TextField filterByCollege = new TextField();
     Span infoText =  new Span("Discover sports events hosted by different institutions. Click to view more details and expand your selection.");
+
 
 
     @Autowired
@@ -68,6 +67,7 @@ public class ListView extends VerticalLayout implements BeforeEnterObserver {
         
         updateList();
     }
+
 
 
     private Component getInfoArea() {

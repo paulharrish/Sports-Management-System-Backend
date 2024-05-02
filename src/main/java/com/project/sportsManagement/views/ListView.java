@@ -7,8 +7,6 @@ import com.project.sportsManagement.repo.EventRepository;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.project.sportsManagement.service.EventService;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.charts.Chart;
-import com.vaadin.flow.component.charts.model.*;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H2;
@@ -39,7 +37,6 @@ public class ListView extends VerticalLayout implements BeforeEnterObserver {
     TextField filterByName = new TextField();
     TextField filterByCollege = new TextField();
     Span infoText =  new Span("Discover sports events hosted by different institutions. Click to view more details and expand your selection.");
-    Chart chart = new Chart(ChartType.COLUMN);
 
 
     @Autowired
@@ -62,7 +59,6 @@ public class ListView extends VerticalLayout implements BeforeEnterObserver {
         infoText.getStyle().set("color","#185396");
         
         configureGrid();
-        configureChart();
         add(
                 getGreetingText(),
                 getInfoArea(),
@@ -73,30 +69,6 @@ public class ListView extends VerticalLayout implements BeforeEnterObserver {
         updateList();
     }
 
-    private void configureChart() {
-        Configuration config = chart.getConfiguration();
-        config.setTitle("Participants in Individual Events");
-
-        XAxis xAxis = new XAxis();
-        xAxis.setTitle("Events");
-
-        YAxis yAxis = new YAxis();
-        yAxis.setTitle("Participants");
-
-        PlotOptionsColumn plotOptions = new PlotOptionsColumn();
-        plotOptions.setDataLabels(new DataLabels(true));
-        config.setPlotOptions(plotOptions);
-
-        List<Event> events = eventRepository.findAll();
-
-        for (Event event : events){
-            int participants = eventService.getTotalNoOfEventParticipants(event);
-            config.addSeries(new ListSeries(event.getEventName(),participants));
-        }
-
-        config.addxAxis(xAxis);
-        config.addyAxis(yAxis);
-    }
 
     private Component getInfoArea() {
         filterByName.setPlaceholder("Filter by Event Name");

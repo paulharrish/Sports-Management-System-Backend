@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -37,7 +38,7 @@ public class Event {
     private EventLevel level;
 
     @OneToMany(mappedBy = "eventId",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private Set<EventGame> games;
+    private Set<EventGame> games = new HashSet<>();
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)

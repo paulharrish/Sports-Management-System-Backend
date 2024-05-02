@@ -3,6 +3,7 @@ package com.project.sportsManagement.views;
 import com.project.sportsManagement.entity.Event;
 import com.project.sportsManagement.entity.Institution;
 import com.project.sportsManagement.repo.EventLevelRepo;
+import com.project.sportsManagement.repo.GameRepository;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.project.sportsManagement.service.EventService;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -18,11 +19,14 @@ public class CreateEvent extends VerticalLayout {
 
 
     private EventService eventService;
+
+    private GameRepository gameRepository;
     @Autowired
-    public CreateEvent(EventLevelRepo eventLevelRepo, AuthenticationService authenticationService, EventService eventService) {
+    public CreateEvent(EventLevelRepo eventLevelRepo, AuthenticationService authenticationService, EventService eventService, GameRepository gameRepository) {
         this.eventService = eventService;
         this.authenticationService = authenticationService;
-        EventCreationForm eventCreationForm = new EventCreationForm(eventLevelRepo,new Event(getCurrentUser()),eventService,getCurrentUser());
+        this.gameRepository = gameRepository;
+        EventCreationForm eventCreationForm = new EventCreationForm(eventLevelRepo,new Event(getCurrentUser()),eventService,gameRepository);
         add(eventCreationForm);
         eventCreationForm.setWidth("300px");
     }

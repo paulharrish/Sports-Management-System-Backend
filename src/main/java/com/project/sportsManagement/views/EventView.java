@@ -4,6 +4,8 @@ import com.project.sportsManagement.entity.*;
 import com.project.sportsManagement.exception.ParticipationException;
 import com.project.sportsManagement.service.AuthenticationService;
 import com.project.sportsManagement.service.EventService;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -19,8 +21,10 @@ import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.UnsupportedEncodingException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashSet;
@@ -152,6 +156,10 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
                         confirmDialog.setConfirmText("Ok");
                         confirmDialog.open();
                         confirmDialog.addConfirmListener(confirmEvent -> confirmDialog.close());
+                    } catch (MessagingException e) {
+                        throw new RuntimeException(e);
+                    } catch (UnsupportedEncodingException e) {
+                        throw new RuntimeException(e);
                     }
 
 
@@ -227,15 +235,29 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
             HorizontalLayout institutionBl = new HorizontalLayout();
             Button editBtn = new Button("Edit");
             Button viewParticipants = new Button("View Participants");
+            Button addGames = new Button("Add games");
+            addGames.addThemeVariants(ButtonVariant.LUMO_SUCCESS,ButtonVariant.LUMO_PRIMARY);
             editBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             editBtn.setEnabled(false);
+            addGames.setEnabled(false);
             viewParticipants.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             viewParticipants.setEnabled(false);
-            institutionBl.add(editBtn,viewParticipants);
+            institutionBl.add(editBtn,viewParticipants,addGames);
             if (authenticationService.getAuthenticatedUser().equals(event.getHost())){
-                editBtn.setEnabled(true);
+                if (event.getStartTime().toInstant().isAfter(Instant.now())){
+                    editBtn.setEnabled(true);
+                    addGames.setEnabled(true);
+                }
                 viewParticipants.setEnabled(true);
             }
+            addGames.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
+                @Override
+                public void onComponentEvent(ClickEvent<Button> buttonClickEvent) {
+                    Dialog addGames = new Dialog("Add games");
+                    addGames.open();
+
+                }
+            });
 
             //changing the buttons layout based on the user login.
             if (authenticationService.getAuthenticatedUser() instanceof Student){

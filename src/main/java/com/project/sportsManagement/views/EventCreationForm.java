@@ -1,10 +1,8 @@
 package com.project.sportsManagement.views;
 
-import com.project.sportsManagement.entity.Event;
-import com.project.sportsManagement.entity.EventGame;
-import com.project.sportsManagement.entity.EventLevel;
-import com.project.sportsManagement.entity.Institution;
+import com.project.sportsManagement.entity.*;
 import com.project.sportsManagement.repo.EventLevelRepo;
+import com.project.sportsManagement.repo.GameRepository;
 import com.project.sportsManagement.service.EventService;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
@@ -19,6 +17,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.dom.Style;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 public class EventCreationForm extends FormLayout {
 
 
@@ -30,7 +31,7 @@ public class EventCreationForm extends FormLayout {
 
     ComboBox<EventLevel> level = new ComboBox<>("Event Level");
 
-    MultiSelectComboBox<EventGame> games = new MultiSelectComboBox<>("Event Games");
+    MultiSelectComboBox<Game> games = new MultiSelectComboBox<>("Event Games");
 
 
     Button save = new Button("Save");
@@ -43,25 +44,27 @@ public class EventCreationForm extends FormLayout {
     Event event;
 
 
-    public EventCreationForm(EventLevelRepo eventLevelRepo, Event event , EventService eventService, Institution institution) {
+    public EventCreationForm(EventLevelRepo eventLevelRepo, Event event , EventService eventService, GameRepository gameRepository) {
 
-        add(eventName,description,startTime,endTime,level,getButtonsLayout());
-        level.setItems(eventLevelRepo.findAll());
-        level.setItemLabelGenerator(level -> level.getLevel());
-        games.setItems();
         this.event = event;
+        level.setItems(eventLevelRepo.findAll());
+        level.setItemLabelGenerator(EventLevel::getLevel);
+        games.setItems(gameRepository.findAll());
+        games.setItemLabelGenerator(Game::getGame);
+        add(eventName,description,startTime,endTime,level,games,getButtonsLayout());
 
 
-        binder.forField(eventName).bind(Event::getEventName,Event::setEventName);
-        binder.forField(description).bind(Event::getDescription,Event::setDescription);
+
+        binder.forField(eventName).asRequired("Event Name cannot be empty").bind(Event::getEventName,Event::setEventName);
+        binder.forField(description).asRequired("Event Name cannot be empty").bind(Event::getDescription,Event::setDescription);
+        binder.forField(level).asRequired("Level Cannot be empty").bind(Event::getLevel,Event::setLevel);
 
 
         binder.setBean(event);
 
         save.addClickListener(click ->{
             if (binder.validate().isOk()){
-                eventService.createEvent(event);
-                binder.setBean(new Event(institution));
+                eventService.createEvent(event,Timestamp.valueOf(startTime.getValue()),Timestamp.valueOf(endTime.getValue()),games.getValue());
                 UI.getCurrent().navigate("");
             }
         });
@@ -83,4 +86,5 @@ public class EventCreationForm extends FormLayout {
         buttonLayout.getStyle().setJustifyContent(Style.JustifyContent.SPACE_BETWEEN);
         return buttonLayout;
     }
+
 }

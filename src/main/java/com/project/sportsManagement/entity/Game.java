@@ -12,7 +12,7 @@ public class Game {
     private int game_id;
     @Column(name = "game")
     private String game;
-    @OneToMany(mappedBy = "gameId",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "gameId",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<EventGame> events;
     @Column(name = "")
     private boolean isSoloParticipationAllowed;

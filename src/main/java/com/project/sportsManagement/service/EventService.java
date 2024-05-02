@@ -4,14 +4,18 @@ import com.project.sportsManagement.entity.*;
 import com.project.sportsManagement.exception.ParticipationException;
 import com.project.sportsManagement.repo.*;
 import com.project.sportsManagement.responseclasses.ParticipationDetails;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+
+import java.io.UnsupportedEncodingException;
+import java.sql.Timestamp;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +38,14 @@ public class EventService {
 
     @Autowired
     private TeamRepository teamRepository;
+
+
+    @Autowired
+    private UserService userService;
+
+
+    @Autowired
+    JavaMailSender javaMailSender;
 
     public List<Event> filterByName(String filterText){
         if (filterText == null || filterText.isEmpty()){
@@ -94,7 +106,8 @@ public class EventService {
         return games;
     }
     @Transactional
-    public void participateInASoloEvent(Student student, Set<EventGame> gameList){
+    public void participateInASoloEvent(Student student, Set<EventGame> gameList) throws MessagingException, UnsupportedEncodingException {
+        List<Participation> participationList = new ArrayList<>();
         for(EventGame game : gameList){
             if (game.getGameId().isSoloParticipationAllowed()){
                 Student studentManaged = studentRepository.findByStudentId(student.getStudentId());
@@ -104,14 +117,58 @@ public class EventService {
                 }
                 Participation participation = new Participation(studentManaged,eventGameManaged);
                 participationRepository.saveAndFlush(participation);
-
+                participationList.add(participation);
             }
+
             else {
                 throw new ParticipationException("One of the games you have selected requires Team participation.Participate as a team by Creating a team or participate with existing team");
             }
 
         }
+        sendParticipationMailToUser(participationList,student);
     }
+
+    private void sendParticipationMailToUser(List<Participation> participationRecords,Student student) throws MessagingException, UnsupportedEncodingException {
+        String email = student.getEmail();
+        Participation sampleParticipation = participationRecords.get(0);
+        String subject = "Participation details - "+" "+sampleParticipation.getGameCode().getEventId().getEventName();
+        String sender = "EventHub - An event Repository";
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper messageHelper = new MimeMessageHelper(message);
+        messageHelper.setFrom("eventhub72@gmail.com", sender);
+        messageHelper.setTo(email);
+        messageHelper.setSubject(subject);
+
+
+        StringBuilder htmlContent = new StringBuilder();
+        htmlContent.append("<html><body>");
+        htmlContent.append("<h2>Participation Details</h2>");
+        htmlContent.append("<table style='border-collapse: collapse; border: 1px solid black;'><tr>"); // Add style for solid border
+        htmlContent.append("<th>Participation Id</th>");
+        htmlContent.append("<th>Event Name</th>");
+        htmlContent.append("<th>Game</th>");
+        htmlContent.append("<th>Host</th>");
+        htmlContent.append("<th>Event Level</th>");
+        htmlContent.append("</tr>");
+
+
+        for (Participation participation : participationRecords) {
+            htmlContent.append("<tr>");
+            htmlContent.append("<td>").append(participation.getParticipationId()).append("</td>");
+            htmlContent.append("<td>").append(participation.getGameCode().getEventId().getEventName()).append("</td>");
+            htmlContent.append("<td>").append(participation.getGameCode().getGameId().getGame()).append("</td>");
+            htmlContent.append("<td>").append(participation.getGameCode().getEventId().getHost().getInstitutionName()).append("</td>");
+            htmlContent.append("<td>").append(participation.getGameCode().getEventId().getLevel().getLevel()).append("</td>");
+            htmlContent.append("</tr>");
+        }
+
+
+        htmlContent.append("</table></body></html>");
+
+        messageHelper.setText(htmlContent.toString(), true);
+        javaMailSender.send(message);
+    }
+
     @Transactional
     public void participateAsTeam(Team team, Set<EventGame> gamesList) {
         Team teamManaged = teamRepository.findById(team.getTeamId()).get();
@@ -142,7 +199,15 @@ public class EventService {
         eventRepository.delete(event);
     }
 
-    public void createEvent(Event event) {
+    public void createEvent(Event event, Timestamp startTime,Timestamp endTime,Set<Game> games) {
+        Set<EventGame> gamesInAEvent = new HashSet<>();
+        for (Game game : games){
+           EventGame eventGame = new EventGame(event,game);
+           gamesInAEvent.add(eventGame);
+        }
+        event.getGames().addAll(gamesInAEvent);
+        event.setStartTime(startTime);
+        event.setEndTime(endTime);
         event.setCreatedAt(new Date());
         event.setUpdatedAt(new Date());
         eventRepository.saveAndFlush(event);

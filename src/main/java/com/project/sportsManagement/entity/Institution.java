@@ -5,10 +5,7 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "institution")
@@ -169,5 +166,23 @@ public class Institution implements UserDetails {
 
     public void setStudents(Set<Student> students) {
         this.students = students;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Institution other = (Institution) obj;
+        return Objects.equals(institutionCode, other.institutionCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(institutionCode);
     }
 }

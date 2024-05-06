@@ -12,7 +12,7 @@ public class EventGame {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "game_code")
     private int gameCode;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "event_id",referencedColumnName = "event_id")
     private Event eventId;
     @ManyToOne()

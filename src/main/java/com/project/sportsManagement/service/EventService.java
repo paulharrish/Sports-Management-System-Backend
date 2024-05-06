@@ -12,9 +12,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.io.UnsupportedEncodingException;
-import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -199,16 +197,13 @@ public class EventService {
         eventRepository.delete(event);
     }
 
-    public void createEvent(Event event, Timestamp startTime,Timestamp endTime,Set<Game> games) {
-        Set<EventGame> gamesInAEvent = new HashSet<>();
-        for (Game game : games){
-           EventGame eventGame = new EventGame(event,game);
-           gamesInAEvent.add(eventGame);
-        }
-        event.getGames().addAll(gamesInAEvent);
-        event.setStartTime(startTime);
-        event.setEndTime(endTime);
+    public void createEvent(Event event) {
         event.setCreatedAt(new Date());
+        event.setUpdatedAt(new Date());
+        eventRepository.saveAndFlush(event);
+    }
+
+    public void modifyEvent(Event event) {
         event.setUpdatedAt(new Date());
         eventRepository.saveAndFlush(event);
     }

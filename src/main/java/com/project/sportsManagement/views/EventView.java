@@ -250,6 +250,15 @@ public class EventView extends VerticalLayout implements HasUrlParameter<Integer
                 }
                 viewParticipants.setEnabled(true);
             }
+            editBtn.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
+                @Override
+                public void onComponentEvent(ClickEvent<Button> clickEvent) {
+                    getUI().ifPresent(ui -> {
+                        ui.navigate("/edit/event/"+event.getEventId());
+                    });
+                }
+            });
+
             addGames.addClickListener(new ComponentEventListener<ClickEvent<Button>>() {
                 @Override
                 public void onComponentEvent(ClickEvent<Button> buttonClickEvent) {

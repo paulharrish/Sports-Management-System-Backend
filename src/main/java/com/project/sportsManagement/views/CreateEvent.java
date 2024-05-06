@@ -26,9 +26,9 @@ public class CreateEvent extends VerticalLayout {
         this.eventService = eventService;
         this.authenticationService = authenticationService;
         this.gameRepository = gameRepository;
-        EventCreationForm eventCreationForm = new EventCreationForm(eventLevelRepo,new Event(getCurrentUser()),eventService,gameRepository);
-        add(eventCreationForm);
-        eventCreationForm.setWidth("300px");
+        EventForm eventForm = new EventForm(eventLevelRepo,new Event(getCurrentUser()),eventService,gameRepository,false);
+        add(eventForm);
+        eventForm.setWidth("350px");
     }
 
 

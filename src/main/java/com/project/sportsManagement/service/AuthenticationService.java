@@ -1,13 +1,11 @@
 package com.project.sportsManagement.service;
 
-import com.project.sportsManagement.dto.InstitutionRegistrationDto;
 import com.project.sportsManagement.dto.LoginDto;
 import com.project.sportsManagement.dto.LoginResponse;
 import com.project.sportsManagement.entity.Institution;
 import com.project.sportsManagement.entity.Location;
 import com.project.sportsManagement.entity.Role;
 import com.project.sportsManagement.entity.Student;
-import com.project.sportsManagement.exception.UserAlreadyExistsException;
 import com.project.sportsManagement.exception.UserNotFoundException;
 import com.project.sportsManagement.repo.InstitutionRepository;
 import com.project.sportsManagement.repo.LocationRepository;

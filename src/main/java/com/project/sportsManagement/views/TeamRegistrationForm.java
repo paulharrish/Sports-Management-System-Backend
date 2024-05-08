@@ -15,8 +15,10 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityManager;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -78,7 +80,13 @@ public class TeamRegistrationForm extends FormLayout {
 
         save.addClickListener(clickEvent -> {
             if (binder.isValid()){
-                userService.createATeam(team,currentStudent,teamMembers.getValue());
+                try {
+                    userService.createATeam(team,currentStudent,teamMembers.getValue());
+                } catch (MessagingException e) {
+                    throw new RuntimeException(e);
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
                 this.getParent().get().getElement().getChild(0).setVisible(true);
                 this.getParent().get().getElement().getChild(1).setVisible(true);
                 removeFromParent();

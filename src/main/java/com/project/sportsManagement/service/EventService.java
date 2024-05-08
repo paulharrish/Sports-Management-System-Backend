@@ -94,6 +94,40 @@ public class EventService {
         return noOfParticipants;
     }
 
+    public List<Participation> getSoloParticipants(Event event){
+
+        List<Participation> participationsList = new ArrayList<>();
+
+        Set<EventGame> eventGameInstances = event.getGames();
+        for (EventGame eventGameInstance : eventGameInstances){
+            Set<Participation> participations = eventGameInstance.getParticipation();
+            for (Participation participation : participations){
+                if (participation.getTeam() == null){
+                    participationsList.add(participation);
+                }
+            }
+
+        }
+        return participationsList;
+    }
+
+    public List<Participation> getTeamParticipants(Event event){
+
+        List<Participation> participationsList = new ArrayList<>();
+
+        Set<EventGame> eventGameInstances = event.getGames();
+        for (EventGame eventGameInstance : eventGameInstances){
+            Set<Participation> participations = eventGameInstance.getParticipation();
+            for (Participation participation : participations){
+                if (participation.getStudent() == null){
+                    participationsList.add(participation);
+                }
+            }
+
+        }
+        return participationsList;
+    }
+
 
     public  List<Game> getGamesInAEvent(Event event){
         Set<EventGame> eventGames = event.getGames();

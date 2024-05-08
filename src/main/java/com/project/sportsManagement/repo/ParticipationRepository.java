@@ -1,7 +1,6 @@
 package com.project.sportsManagement.repo;
 
 import com.project.sportsManagement.entity.Participation;
-import com.project.sportsManagement.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +19,8 @@ public interface ParticipationRepository extends JpaRepository<Participation,Int
     Optional<Participation> findByStudentStudentIdAndGameCodeGameCode(int studentId, int gameCode);
 
     Optional<Participation> findByTeamTeamIdAndGameCodeGameCode(int teamId, int gameCode);
+
+
 
 
 }
